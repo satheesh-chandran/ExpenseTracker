@@ -1,9 +1,12 @@
 import 'package:first_flutter_app/Expense.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:grouped_list/grouped_list.dart';
+
+import 'AddExpensePage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,9 +73,6 @@ class ExpenseItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const dateFormat = 'yyyy MMMM dd hh:mm aaa';
-    var formatter = DateFormat(dateFormat);
-    var localDate = formatter.format(DateTime.now());
     var categoryStyle = TextStyle(
         color: Colors.grey.shade800,
         fontSize: 14,
@@ -206,7 +206,12 @@ class HomePage extends StatelessWidget {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddExpensePage()),
+            );
+          },
           tooltip: 'Add Expense',
           child: const Icon(Icons.add),
         ),
