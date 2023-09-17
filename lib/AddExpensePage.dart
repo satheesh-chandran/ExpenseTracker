@@ -1,3 +1,4 @@
+import 'package:first_flutter_app/widgets/ExpenseCategoryBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -106,16 +107,18 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 ),
                 const ContainerSizeBox(),
                 ListTile(
-                  leading: const ExpenseCategoryBar(),
+                  leading: ExpenseCategoryBar(
+                      dropdownValue.icon, dropdownValue.color),
                   trailing: const Icon(Icons.add),
                   title: DropdownButton(
                       value: dropdownValue,
                       underline: Container(),
                       isExpanded: true,
-                      items: ExpenseCategory.values.map((ExpenseCategory value) {
+                      items:
+                          ExpenseCategory.values.map((ExpenseCategory value) {
                         return DropdownMenuItem<ExpenseCategory>(
                           value: value,
-                          child: Text(value.name.toUpperCase()),
+                          child: Text(value.qualifiedName.toUpperCase()),
                         );
                       }).toList(),
                       onChanged: (newCategory) {
