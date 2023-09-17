@@ -1,40 +1,94 @@
 import 'package:first_flutter_app/Expense.dart';
+import 'dart:io' as io;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:flutter/foundation.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 import 'AddExpensePage.dart';
 
 const String APP_TITLE = 'Budget tracker';
+const String TABLE_NAME = 'expense';
 const String DATE_FORMAT = 'dd MMMM yyyy, hh:mm aaa';
+const String EXPENSE_TABLE_SCHEMA = 'CREATE TABLE $TABLE_NAME('
+    'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
+    'title VARCHAR(100) NOT NULL,'
+    'amount REAL NOT NULL,'
+    'category VARCHAR(100) NOT NULL,'
+    'paid_date VARCHAR(40) DEFAULT CURRENT_TIMESTAMP NOT NULL,'
+    'isRefundable INTEGER DEFAULT 0,'
+    'refundedAmount REAL DEFAULT 0,'
+    'deletionMarker INTEGER DEFAULT 0);';
+
+const String expense1 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Kerala vision\', 600, \'bills\', \'2023-09-01 09:20:23\');';
+const String expense2 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Groceries\', 3000, \'shopping\', \'2023-09-01 09:20:23\');';
+const String expense3 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Jio recharge\', 249, \'bills\', \'2023-09-04 09:20:23\');';
+const String expense4 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Pizza\', 500, \'food\', \'2023-09-06 09:20:23\');';
+const String expense5 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Gold Investment\', 3000, \'investments\', \'2023-09-07 09:20:23\');';
+const String expense6 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Car Petrol\', 1000, \'vehicle\', \'2023-09-10 09:20:23\');';
+const String expense7 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Bike Service\', 2360, \'vehicle\', \'2023-09-10 09:20:23\');';
+const String expense8 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Hospital diabetic checkup\', 450, \'healthcare\', \'2023-09-11 09:20:23\');';
+const String expense9 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Snacks\', 150, \'food\', \'2023-09-11 09:20:23\');';
+const String expense10 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Fruits and vegetables\', 270, \'food\', \'2023-09-13 09:20:23\');';
+const String expense11 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Home loan EMI\', 7500, \'emi\', \'2023-09-14 09:20:23\');';
+const String expense12 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Bike EMI\', 2700, \'emi\', \'2023-09-17 09:20:23\');';
+const String expense13 =
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Onam dress purchage\', 3100, \'shopping\', \'2023-08-17 09:20:23\');';
+
+var joinedQuery = [
+  EXPENSE_TABLE_SCHEMA,
+  expense1,
+  expense2,
+  expense3,
+  expense4,
+  expense5,
+  expense6,
+  expense7,
+  expense8,
+  expense9,
+  expense10,
+  expense11,
+  expense12,
+  expense13,
+].join("\n");
+
+Future<String> getDataBasePath() async {
+  if (kIsWeb) {
+    return inMemoryDatabasePath;
+  }
+  final io.Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+  return path.join(appDocumentsDir.path, "databases", "expense_app.db");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // 'DROP TABLE IF EXISTS expense;
-  var schema = 'CREATE TABLE expense('
-      'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
-      ' title VARCHAR(100) NOT NULL,'
-      ' amount REAL NOT NULL,'
-      ' category VARCHAR(100) NOT NULL,'
-      ' paid_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,'
-      ' isRefundable INTEGER DEFAULT 0,'
-      ' refundedAmount REAL DEFAULT 0,'
-      ' deletionMarker INTEGER DEFAULT 0);';
-  // var database = openDatabase(
-  //   join(await getDatabasesPath(), 'expense_table.db'),
-  //   onCreate: (db, version) {
-  //     return db.execute(schema);
-  //   },
-  //   version: 1,
-  // );
-  runApp(const MyApp());
+  sqfliteFfiInit();
+  var databaseFactory = kIsWeb ? databaseFactoryFfiWeb : databaseFactoryFfi;
+  var database = databaseFactory.openDatabase(await getDataBasePath());
+  var db = await database;
+  await db.execute(joinedQuery);
+  runApp(MyApp(database));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  Future<Database> database;
+
+  MyApp(this.database, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +101,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: data,
-      home: const HomePage(),
+      home: HomePage(database),
     );
   }
 }
@@ -70,7 +124,7 @@ class ExpenseCategoryBar extends StatelessWidget {
 }
 
 class ExpenseItem extends StatelessWidget {
-  late Dummy expense;
+  late RawExpenseModel expense;
 
   ExpenseItem(this.expense, {super.key});
 
@@ -104,47 +158,22 @@ class ExpenseItem extends StatelessWidget {
   }
 }
 
-Dummy createDummyModel(String date) {
-  return Dummy(
-      title: "Kerala vision",
-      amount: 1000.50,
-      category: Category.bills,
-      paidDate: date);
-}
-
 class ExpenseView extends StatelessWidget {
-  const ExpenseView({super.key});
+  List<RawExpenseModel> expenses;
+
+  ExpenseView(this.expenses, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    var elements = [
-      createDummyModel("2023 09 16"),
-      createDummyModel("2023 09 16"),
-      createDummyModel("2023 09 16"),
-      createDummyModel("2023 09 15"),
-      createDummyModel("2023 09 14"),
-      createDummyModel("2023 09 14"),
-      createDummyModel("2023 09 14"),
-      createDummyModel("2023 09 14"),
-      createDummyModel("2023 09 16"),
-      createDummyModel("2023 09 11"),
-      createDummyModel("2023 09 11"),
-      createDummyModel("2023 09 11"),
-      createDummyModel("2023 09 13"),
-      createDummyModel("2023 09 13"),
-      createDummyModel("2023 09 20"),
-      createDummyModel("2023 09 16"),
-      createDummyModel("2023 09 20"),
-      createDummyModel("2023 09 21"),
-      createDummyModel("2023 09 21"),
-      createDummyModel("2023 09 16"),
-      createDummyModel("2023 09 16"),
-    ];
-
-    return GroupedListView<Dummy, String>(
-      elements: elements,
-      groupBy: (element) => element.paidDate,
+    return GroupedListView<RawExpenseModel, String>(
+      elements: expenses,
+      groupBy: (element) => element.paidDate.split(" ")[0],
       groupSeparatorBuilder: (String groupByValue) {
+        var totalGroupExpense = expenses
+            .where((element) => element.paidDate.split(" ")[0] == groupByValue)
+            .map((e) => e.amount)
+            .reduce((value, element) => value + element);
+
         var separatorStyle = TextStyle(
             color: Colors.grey.shade700,
             overflow: TextOverflow.ellipsis,
@@ -164,11 +193,12 @@ class ExpenseView extends StatelessWidget {
                 Padding(
                     padding:
                         const EdgeInsets.only(left: 160, bottom: 10, top: 10),
-                    child: Text("Expense: 3003 /-", style: separatorStyle)),
+                    child: Text("Expense: $totalGroupExpense /-",
+                        style: separatorStyle)),
               ],
             ));
       },
-      itemBuilder: (context, Dummy element) => ExpenseItem(element),
+      itemBuilder: (context, RawExpenseModel element) => ExpenseItem(element),
       itemComparator: (item1, item2) =>
           item1.paidDate.compareTo(item2.paidDate),
       useStickyGroupSeparators: true,
@@ -178,8 +208,42 @@ class ExpenseView extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  Future<Database> database;
+
+  HomePage(this.database, {super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState(database);
+}
+
+class _HomePageState extends State<HomePage> {
+  Future<Database> database;
+  List<RawExpenseModel> expenses = [];
+  bool isLoaded = false;
+
+  _HomePageState(this.database);
+
+  Future<void> loadAllExpenses() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(TABLE_NAME);
+
+    setState(() {
+      expenses = expenses = List.generate(maps.length, (i) {
+        return RawExpenseModel(
+          id: maps[i]['id'],
+          title: maps[i]['title'],
+          amount: maps[i]['amount'],
+          category: ExpenseCategory.values.byName(maps[i]['category']),
+          paidDate: maps[i]['paid_date'],
+          isRefundable: maps[i]['isRefundable'] != 0,
+          refundedAmount: maps[i]['refundedAmount'],
+          deletionMarker: maps[i]['deletionMarker'] != 0,
+        );
+      });
+      isLoaded = true;
+    });
+  }
 
   Future<void> _navigateToAddExpensePage(BuildContext context) async {
     NewExpense expense = await Navigator.push(
@@ -188,6 +252,9 @@ class HomePage extends StatelessWidget {
     );
     if (!context.mounted) return;
     if (expense != null) {
+      database
+          .then((db) => db.insert(TABLE_NAME, expense.toMap()))
+          .then((value) => loadAllExpenses());
       var msg = '${expense.title}, ${expense.amount}, ${expense.category.name}';
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
@@ -197,6 +264,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    loadAllExpenses();
     const tabHeaderTextStyle =
         TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
     return DefaultTabController(
@@ -214,10 +282,12 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            ExpenseView(),
-            Icon(Icons.add_chart_outlined),
+            isLoaded
+                ? ExpenseView(expenses)
+                : const Center(child: CircularProgressIndicator()),
+            const Icon(Icons.add_chart_outlined),
           ],
         ),
         floatingActionButton: FloatingActionButton(

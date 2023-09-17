@@ -1,4 +1,4 @@
-enum Category {
+enum ExpenseCategory {
   groceries("Groceries & Grains"),
   bills("Bills"),
   investments("Investments"),
@@ -14,15 +14,15 @@ enum Category {
 
   final String qualifiedName;
 
-  const Category(this.qualifiedName);
+  const ExpenseCategory(this.qualifiedName);
 }
 
 class RawExpenseModel {
   final int id;
   final String title;
   final double amount;
-  final Category category;
-  final int paidDate;
+  final ExpenseCategory category;
+  final String paidDate;
   final bool isRefundable;
   final double refundedAmount;
   final bool deletionMarker;
@@ -41,15 +41,23 @@ class RawExpenseModel {
 class NewExpense {
   final String title;
   final int amount;
-  final Category category;
+  final ExpenseCategory category;
 
   const NewExpense(this.title, this.amount, this.category);
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'amount': amount,
+      'category': category.name,
+    };
+  }
 }
 
 class Dummy {
   final String title;
   final double amount;
-  final Category category;
+  final ExpenseCategory category;
   final String paidDate;
 
   const Dummy({

@@ -22,7 +22,7 @@ class AddExpensePage extends StatefulWidget {
 }
 
 class _AddExpensePageState extends State<AddExpensePage> {
-  Category dropdownValue = Category.miscellaneous;
+  ExpenseCategory dropdownValue = ExpenseCategory.miscellaneous;
   var remarksController = TextEditingController();
   var amountController = TextEditingController(text: "0");
 
@@ -112,8 +112,8 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       value: dropdownValue,
                       underline: Container(),
                       isExpanded: true,
-                      items: Category.values.map((Category value) {
-                        return DropdownMenuItem<Category>(
+                      items: ExpenseCategory.values.map((ExpenseCategory value) {
+                        return DropdownMenuItem<ExpenseCategory>(
                           value: value,
                           child: Text(value.name.toUpperCase()),
                         );
