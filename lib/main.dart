@@ -1,5 +1,6 @@
 import 'dart:io' as io;
 
+import 'package:first_flutter_app/DataRepository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
@@ -76,19 +77,15 @@ Future<String> getDataBasePath() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
-  var databaseFactory = kIsWeb ? databaseFactoryFfiWeb : databaseFactoryFfi;
-  var database = databaseFactory.openDatabase(await getDataBasePath());
-  database.then((db) => db.execute(EXPENSE_TABLE_SCHEMA));
-  if (kIsWeb) {
-    database.then((db) => db.execute(joinedQuery));
-  }
-  runApp(MyApp(database));
+  DataRepository repository = await DataRepository.initialise();
+  repository.loadSchema();
+  runApp(MyApp(repository));
 }
 
 class MyApp extends StatelessWidget {
-  Future<Database> database;
+  DataRepository repository;
 
-  MyApp(this.database, {super.key});
+  MyApp(this.repository, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +98,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: data,
-      home: HomePage(database),
+      home: HomePage(repository),
     );
   }
 }

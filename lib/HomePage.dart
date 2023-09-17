@@ -3,42 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'AddExpensePage.dart';
+import 'DataRepository.dart';
 import 'Expense.dart';
 import 'main.dart';
 
 class HomePage extends StatefulWidget {
-  Future<Database> database;
+  DataRepository repository;
 
-  HomePage(this.database, {super.key});
+  HomePage(this.repository, {super.key});
 
   @override
-  _HomePageState createState() => _HomePageState(database);
+  _HomePageState createState() => _HomePageState(repository);
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<Database> database;
+  DataRepository repository;
   List<RawExpenseModel> expenses = [];
   bool isLoaded = false;
 
-  _HomePageState(this.database);
+  _HomePageState(this.repository);
 
   Future<void> loadAllExpenses() async {
-    final List<Map<String, dynamic>> maps =
-        await database.then((db) => db.query(TABLE_NAME));
-
+    var allExpenses = await repository.getAllExpenses();
     setState(() {
-      expenses = expenses = List.generate(maps.length, (i) {
-        return RawExpenseModel(
-          id: maps[i]['id'],
-          title: maps[i]['title'],
-          amount: maps[i]['amount'],
-          category: ExpenseCategory.values.byName(maps[i]['category']),
-          paidDate: maps[i]['paid_date'],
-          isRefundable: maps[i]['isRefundable'] != 0,
-          refundedAmount: maps[i]['refundedAmount'],
-          deletionMarker: maps[i]['deletionMarker'] != 0,
-        );
-      });
+      expenses = allExpenses;
       isLoaded = true;
     });
   }
@@ -50,9 +38,7 @@ class _HomePageState extends State<HomePage> {
     );
     if (!context.mounted) return;
     if (expense != null) {
-      database
-          .then((db) => db.insert(TABLE_NAME, expense.toMap()))
-          .then((_) => loadAllExpenses());
+      repository.addNewExpense(expense).then((_) => loadAllExpenses());
       var msg = '${expense.title}, ${expense.amount}, ${expense.category.name}';
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
