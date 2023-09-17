@@ -38,6 +38,14 @@ class RawExpenseModel {
       required this.deletionMarker});
 }
 
+class NewExpense {
+  final String title;
+  final int amount;
+  final Category category;
+
+  const NewExpense(this.title, this.amount, this.category);
+}
+
 class Dummy {
   final String title;
   final double amount;

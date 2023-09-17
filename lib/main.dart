@@ -8,6 +8,9 @@ import 'package:grouped_list/grouped_list.dart';
 
 import 'AddExpensePage.dart';
 
+const String APP_TITLE = 'Budget tracker';
+const String DATE_FORMAT = 'dd MMMM yyyy, hh:mm aaa';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // 'DROP TABLE IF EXISTS expense;
@@ -44,7 +47,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: data,
-      home: const HomePage(title: 'Budget tracker'),
+      home: const HomePage(),
     );
   }
 }
@@ -176,9 +179,21 @@ class ExpenseView extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key, required this.title});
+  const HomePage({super.key});
 
-  final String title;
+  Future<void> _navigateToAddExpensePage(BuildContext context) async {
+    NewExpense expense = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AddExpensePage()),
+    );
+    if (!context.mounted) return;
+    if (expense != null) {
+      var msg = '${expense.title}, ${expense.amount}, ${expense.category.name}';
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(msg)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +204,7 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("Budget Tracker"),
+          title: const Text(APP_TITLE),
           bottom: const TabBar(
             labelPadding: EdgeInsets.all(10),
             indicatorSize: TabBarIndicatorSize.label,
@@ -207,10 +222,7 @@ class HomePage extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AddExpensePage()),
-            );
+            _navigateToAddExpensePage(context);
           },
           tooltip: 'Add Expense',
           child: const Icon(Icons.add),
