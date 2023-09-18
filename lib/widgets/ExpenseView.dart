@@ -1,8 +1,53 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../Expense.dart';
 import 'ExpenseItem.dart';
+
+class ChartData {
+  ExpenseCategory category;
+  int total;
+
+  ChartData(this.category, this.total);
+}
+
+class InsightsView extends StatelessWidget {
+  List<RawExpenseModel> expenses;
+
+  InsightsView(this.expenses, {super.key});
+
+  List<ChartData> _prepareChartData() {
+    Map<ExpenseCategory, int> map = <ExpenseCategory, int>{};
+    for (var element in expenses) {
+      map.putIfAbsent(element.category, () => 0);
+      map[element.category] = (map[element.category]! + element.amount.round());
+    }
+    return map.entries.map((el) => ChartData(el.key, el.value)).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<ChartData> chartData = _prepareChartData();
+    var size = MediaQuery.of(context).size;
+    return Center(
+      child: Container(
+        height: size.height,
+        width: size.width,
+        child: Column(children: [
+          SfCircularChart(series: <CircularSeries>[
+            DoughnutSeries<ChartData, String>(
+                dataSource: chartData,
+                pointColorMapper: (ChartData data, _) => data.category.color,
+                xValueMapper: (ChartData data, _) => data.category.name,
+                yValueMapper: (ChartData data, _) => data.total)
+          ])
+        ]),
+      ),
+    );
+  }
+}
 
 class ExpenseView extends StatelessWidget {
   List<RawExpenseModel> expenses;

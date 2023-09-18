@@ -71,7 +71,9 @@ class _HomePageState extends State<HomePage> {
             isLoaded
                 ? ExpenseView(expenses)
                 : const Center(child: CircularProgressIndicator()),
-            const Icon(Icons.add_chart_outlined),
+            isLoaded
+                ? InsightsView(expenses)
+                : const Center(child: CircularProgressIndicator()),
           ],
         ),
         floatingActionButton: FloatingActionButton(
