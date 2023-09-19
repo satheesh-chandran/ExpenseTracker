@@ -1,26 +1,25 @@
+import 'package:first_flutter_app/widgets/ExpenseView.dart';
 import 'package:flutter/material.dart';
 
 import '../Expense.dart';
 import 'ExpenseCategoryBar.dart';
 
 class ExpenseItem extends StatelessWidget {
-  late RawExpenseModel expense;
+  final RawExpenseModel expense;
 
-  ExpenseItem(this.expense, {super.key});
+  const ExpenseItem(this.expense, {super.key});
 
   @override
   Widget build(BuildContext context) {
     var categoryStyle = TextStyle(
         color: Colors.grey.shade800,
-        fontSize: 14,
+        fontSize: 12,
         overflow: TextOverflow.ellipsis,
+        fontStyle: FontStyle.italic,
         fontWeight: FontWeight.w500);
     var category = expense.category;
     return Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-        ),
+        decoration: getBoxDecorationWithShadow(),
         margin: const EdgeInsets.all(5),
         child: ListTile(
           title: Text(expense.title,
@@ -28,10 +27,9 @@ class ExpenseItem extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   overflow: TextOverflow.ellipsis,
                   color: Colors.black)),
-          subtitle: Text(category.name.toUpperCase(), style: categoryStyle),
-          leading:
-              ExpenseCategoryBar(category.icon, category.color),
-          trailing: Text(expense.amount.toString(),
+          subtitle: Text(category.qualifiedName, style: categoryStyle),
+          leading: ExpenseCategoryBar(category.icon, category.color),
+          trailing: Text(expense.amount.round().toString(),
               style: TextStyle(
                   fontWeight: FontWeight.w800,
                   color: Colors.green.shade800,

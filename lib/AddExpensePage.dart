@@ -1,4 +1,5 @@
 import 'package:first_flutter_app/widgets/ExpenseCategoryBar.dart';
+import 'package:first_flutter_app/widgets/ExpenseView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -52,18 +53,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
       ),
       body: Center(
           child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          boxShadow: [
-            BoxShadow(
-              color: Color(0xffDDDDDD),
-              blurRadius: 6.0,
-              spreadRadius: 2.0,
-              offset: Offset(0.0, 0.0),
-            )
-          ],
-        ),
+        decoration: getBoxDecorationWithShadow(),
         height: MediaQuery.of(context).size.height * 0.45,
         width: MediaQuery.of(context).size.width * 0.8,
         child: Padding(

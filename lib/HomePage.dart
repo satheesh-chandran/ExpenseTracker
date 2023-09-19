@@ -1,6 +1,6 @@
 import 'package:first_flutter_app/widgets/ExpenseView.dart';
+import 'package:first_flutter_app/widgets/InsightsView.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 
 import 'AddExpensePage.dart';
 import 'DataRepository.dart';
@@ -8,16 +8,16 @@ import 'Expense.dart';
 import 'main.dart';
 
 class HomePage extends StatefulWidget {
-  DataRepository repository;
+ final DataRepository repository;
 
-  HomePage(this.repository, {super.key});
+  const HomePage(this.repository, {super.key});
 
   @override
   _HomePageState createState() => _HomePageState(repository);
 }
 
 class _HomePageState extends State<HomePage> {
-  DataRepository repository;
+  final DataRepository repository;
   List<RawExpenseModel> expenses = [];
   bool isLoaded = false;
 
