@@ -32,7 +32,7 @@ class ExpenseItem extends StatelessWidget {
           trailing: Text(expense.amount.round().toString(),
               style: TextStyle(
                   fontWeight: FontWeight.w800,
-                  color: Colors.green.shade800,
+                  color: Theme.of(context).primaryColor,
                   fontSize: 18)),
         ));
   }

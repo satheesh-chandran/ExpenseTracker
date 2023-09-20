@@ -92,8 +92,9 @@ class MyApp extends StatelessWidget {
     var data = ThemeData(
       fontFamily: 'nunito',
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.black)
-          .copyWith(background: Colors.grey.shade200),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.pink,
+      ),
     );
     return MaterialApp(
       title: 'Flutter Demo',

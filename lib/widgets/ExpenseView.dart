@@ -30,6 +30,7 @@ class ExpenseView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GroupedListView<RawExpenseModel, String>(
       elements: expenses,
+      shrinkWrap: true,
       groupBy: (element) => element.paidDate.split(" ")[0],
       groupSeparatorBuilder: (String groupByValue) {
         var totalGroupExpense = expenses
@@ -49,13 +50,12 @@ class ExpenseView extends StatelessWidget {
             child: Row(
               children: [
                 Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, bottom: 2, top: 2),
+                    padding: const EdgeInsets.only(left: 20, bottom: 2, top: 2),
                     child: Text(groupByValue,
                         textAlign: TextAlign.left, style: separatorStyle)),
                 Padding(
                     padding:
-                        const EdgeInsets.only(left: 200, bottom: 2, top: 2),
+                        const EdgeInsets.only(left: 190, bottom: 2, top: 2),
                     child: Text("Expense: $totalGroupExpense /-",
                         style: separatorStyle)),
               ],
