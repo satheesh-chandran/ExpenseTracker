@@ -1,16 +1,33 @@
 import 'package:first_flutter_app/widgets/ExpenseCategoryBar.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'AddExpensePage.dart';
 import 'Expense.dart';
+import 'main.dart';
 
 class ViewSingleExpensePage extends StatelessWidget {
   final RawExpenseModel expense;
   final DeleteCallback onDelete;
   final bool shouldRedirect;
+  final EditCallback onEdit;
 
-  const ViewSingleExpensePage(this.expense, this.shouldRedirect, this.onDelete,
+  const ViewSingleExpensePage(
+      this.expense, this.shouldRedirect, this.onDelete, this.onEdit,
       {super.key});
+
+  void _toEditPage(BuildContext context) async {
+    Navigator.pop(context);
+    NewExpense newExpense = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddAndEditExpensePage(expense: expense)));
+    if (newExpense != null) {
+      var editExpenseModel = EditExpenseModel(
+          expense.id, newExpense.title, newExpense.amount, newExpense.category);
+      onEdit(editExpenseModel);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +64,10 @@ class ViewSingleExpensePage extends StatelessWidget {
                   color: Colors.white,
                 ),
                 Theme.of(context).primaryColor),
-            title: Text(expense.paidDate, style: textStyle),
+            title: Text(
+                DateFormat(DATE_FORMAT)
+                    .format(DateTime.parse(expense.paidDate)),
+                style: textStyle),
           ),
           const ContainerSizeBox(),
           ListTile(
@@ -56,7 +76,9 @@ class ViewSingleExpensePage extends StatelessWidget {
           ),
           const ContainerSizeBox(),
           ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                _toEditPage(context);
+              },
               icon: const Icon(Icons.edit),
               label: const Text("EDIT EXPENSE")),
           const ContainerSizeBox(),

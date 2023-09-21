@@ -42,7 +42,7 @@ const String expense8 =
 const String expense9 =
     'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Snacks\', 150, \'food\', \'2023-09-11 09:20:23\');';
 const String expense10 =
-    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Fruits and vegetables\', 270, \'food\', \'2023-09-13 09:20:23\');';
+    'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Fruits and vegetables\', 270, \'food\', \'2023-09-13 13:20:23\');';
 const String expense11 =
     'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Home loan EMI\', 7500, \'emi\', \'2023-09-14 09:20:23\');';
 const String expense12 =

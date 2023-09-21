@@ -18,8 +18,9 @@ class InsightsView extends StatelessWidget {
   final List<RawExpenseModel> expenses;
   final DataRepository repository;
   final DeleteCallback onDelete;
+  final EditCallback onEdit;
 
-  const InsightsView(this.expenses, this.repository, this.onDelete,
+  const InsightsView(this.expenses, this.repository, this.onDelete, this.onEdit,
       {super.key});
 
   List<ChartData> _prepareChartData() {
@@ -45,7 +46,7 @@ class InsightsView extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) {
                 return CategorisedExpenseView(
-                    repository, data.category, onDelete);
+                    repository, data.category, onDelete, onEdit);
               }),
             );
           },

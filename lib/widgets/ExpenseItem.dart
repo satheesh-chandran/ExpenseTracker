@@ -9,13 +9,16 @@ class ExpenseItem extends StatelessWidget {
   final RawExpenseModel expense;
   final DeleteCallback onDelete;
   final bool shouldRedirect;
+  final EditCallback onEdit;
 
-  const ExpenseItem(this.expense, this.shouldRedirect, this.onDelete,
+  const ExpenseItem(
+      this.expense, this.shouldRedirect, this.onDelete, this.onEdit,
       {super.key});
 
   Widget _showAlertDialog(BuildContext context) {
     return AlertDialog(
-        content: ViewSingleExpensePage(expense, shouldRedirect, onDelete));
+        content:
+            ViewSingleExpensePage(expense, shouldRedirect, onDelete, onEdit));
   }
 
   @override

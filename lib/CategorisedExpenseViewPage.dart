@@ -7,25 +7,30 @@ import 'main.dart';
 
 class CategorisedExpenseView extends StatefulWidget {
   final DeleteCallback onDelete;
+  final EditCallback onEdit;
   final ExpenseCategory category;
   final DataRepository repository;
 
-  const CategorisedExpenseView(this.repository, this.category, this.onDelete,
+  const CategorisedExpenseView(
+      this.repository, this.category, this.onDelete, this.onEdit,
       {super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return _CategorisedExpenseViewState(repository, category, onDelete);
+    return _CategorisedExpenseViewState(repository, category, onDelete, onEdit);
   }
 }
 
 class _CategorisedExpenseViewState extends State<CategorisedExpenseView> {
   List<RawExpenseModel> expenses = [];
   final DeleteCallback onDelete;
+  final EditCallback onEdit;
+
   final ExpenseCategory category;
   final DataRepository repository;
 
-  _CategorisedExpenseViewState(this.repository, this.category, this.onDelete);
+  _CategorisedExpenseViewState(
+      this.repository, this.category, this.onDelete, this.onEdit);
 
   void setExpenseState() async {
     var list = await repository.getAllExpensesOf(category);
@@ -51,7 +56,7 @@ class _CategorisedExpenseViewState extends State<CategorisedExpenseView> {
         title: const Text(APP_TITLE),
       ),
       body: ExpenseView(expenses, expenses.length <= 1,
-          (id, shouldRedirect) => onExpenseDelete(id, shouldRedirect)),
+          (id, shouldRedirect) => onExpenseDelete(id, shouldRedirect), onEdit),
     );
   }
 }

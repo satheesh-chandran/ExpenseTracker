@@ -16,17 +16,31 @@ class ContainerSizeBox extends StatelessWidget {
   }
 }
 
-class AddExpensePage extends StatefulWidget {
-  const AddExpensePage({super.key});
+class AddAndEditExpensePage extends StatefulWidget {
+  final RawExpenseModel? expense;
+
+  const AddAndEditExpensePage({super.key, this.expense});
 
   @override
-  _AddExpensePageState createState() => _AddExpensePageState();
+  AddAndEditExpensePageState createState() {
+    return AddAndEditExpensePageState(expense);
+  }
 }
 
-class _AddExpensePageState extends State<AddExpensePage> {
-  ExpenseCategory dropdownValue = ExpenseCategory.miscellaneous;
-  var remarksController = TextEditingController();
-  var amountController = TextEditingController();
+class AddAndEditExpensePageState extends State<AddAndEditExpensePage> {
+  late ExpenseCategory dropdownValue;
+
+  late TextEditingController remarksController;
+  late TextEditingController amountController;
+
+  RawExpenseModel? expense;
+
+  AddAndEditExpensePageState(this.expense) {
+    remarksController = TextEditingController(text: expense?.title ?? "");
+    amountController =
+        TextEditingController(text: expense?.amount.round().toString() ?? "");
+    dropdownValue = expense?.category ?? ExpenseCategory.miscellaneous;
+  }
 
   Future<void> _sentDataToHomePage(BuildContext context) async {
     try {
@@ -43,9 +57,16 @@ class _AddExpensePageState extends State<AddExpensePage> {
     }
   }
 
+  String _getFormDateString() {
+    if (expense == null) {
+      return DateFormat(DATE_FORMAT).format(DateTime.now());
+    }
+    return DateFormat(DATE_FORMAT).format(DateTime.parse(expense!.paidDate));
+  }
+
   @override
   Widget build(BuildContext context) {
-    var localDate = DateFormat(DATE_FORMAT).format(DateTime.now());
+    var formTitle = expense == null ? "Add Expense" : "Edit Expense";
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -54,14 +75,14 @@ class _AddExpensePageState extends State<AddExpensePage> {
       body: Center(
           child: Container(
         decoration: getBoxDecorationWithShadow(),
-        height: MediaQuery.of(context).size.height * 0.55,
+        height: MediaQuery.of(context).size.height * 0.58,
         width: MediaQuery.of(context).size.width * 0.8,
         child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
               children: [
                 Text(
-                  "Add New Expense",
+                  formTitle,
                   style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
@@ -69,7 +90,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 ),
                 const ContainerSizeBox(),
                 Text(
-                  localDate,
+                  _getFormDateString(),
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
@@ -124,8 +145,8 @@ class _AddExpensePageState extends State<AddExpensePage> {
                     onPressed: () {
                       _sentDataToHomePage(context);
                     },
-                    icon: const Icon(Icons.add),
-                    label: const Text("ADD EXPENSE"))
+                    icon: Icon(expense == null ? Icons.add : Icons.edit),
+                    label: Text(formTitle.toUpperCase()))
               ],
             )),
       )),

@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
 
   _HomePageState(this.repository);
 
-  void showSnackBarMessage(String msg) {
+  void _showSnackBarMessage(String msg) {
     if (context.mounted) {
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
@@ -83,12 +83,12 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _navigateToAddExpensePage(BuildContext context) async {
     NewExpense expense = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const AddExpensePage()));
+        MaterialPageRoute(builder: (context) => const AddAndEditExpensePage()));
     if (!context.mounted) return;
     if (expense != null) {
       _setExpenseState(await repository.addNewExpense(expense));
       var msg = 'Expense: ${expense.title} added of amount ${expense.amount}';
-      showSnackBarMessage(msg);
+      _showSnackBarMessage(msg);
     }
   }
 
@@ -116,10 +116,10 @@ class _HomePageState extends State<HomePage> {
         body: TabBarView(
           children: [
             isLoaded
-                ? ExpenseView(expenses, false, deleteAction)
+                ? ExpenseView(expenses, false, deleteAction, _onEdit)
                 : const Center(child: CircularProgressIndicator()),
             isLoaded
-                ? InsightsView(expenses, repository, deleteAction)
+                ? InsightsView(expenses, repository, deleteAction, _onEdit)
                 : const Center(child: CircularProgressIndicator()),
           ],
         ),

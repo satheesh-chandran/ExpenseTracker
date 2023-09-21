@@ -23,8 +23,10 @@ class ExpenseView extends StatelessWidget {
   final List<RawExpenseModel> expenses;
   final DeleteCallback onDelete;
   final bool shouldRedirect;
+  final EditCallback onEdit;
 
-  const ExpenseView(this.expenses, this.shouldRedirect, this.onDelete,
+  const ExpenseView(
+      this.expenses, this.shouldRedirect, this.onDelete, this.onEdit,
       {super.key});
 
   @override
@@ -63,7 +65,7 @@ class ExpenseView extends StatelessWidget {
             ));
       },
       itemBuilder: (context, RawExpenseModel element) =>
-          ExpenseItem(element, expenses.length <= 1, onDelete),
+          ExpenseItem(element, expenses.length <= 1, onDelete, onEdit),
       itemComparator: (item1, item2) =>
           item1.paidDate.compareTo(item2.paidDate),
       useStickyGroupSeparators: true,
