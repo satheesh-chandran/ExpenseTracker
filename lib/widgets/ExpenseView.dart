@@ -1,9 +1,7 @@
-import 'package:first_flutter_app/widgets/ExpenseCategoryBar.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 
 import '../Expense.dart';
-import '../ViewSingleExpensePage.dart';
 import 'ExpenseItem.dart';
 
 BoxDecoration getBoxDecorationWithShadow() {
@@ -24,8 +22,10 @@ BoxDecoration getBoxDecorationWithShadow() {
 class ExpenseView extends StatelessWidget {
   final List<RawExpenseModel> expenses;
   final DeleteCallback onDelete;
+  final bool shouldRedirect;
 
-  const ExpenseView(this.expenses, this.onDelete, {super.key});
+  const ExpenseView(this.expenses, this.shouldRedirect, this.onDelete,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class ExpenseView extends StatelessWidget {
             ));
       },
       itemBuilder: (context, RawExpenseModel element) =>
-          ExpenseItem(element, onDelete),
+          ExpenseItem(element, expenses.length <= 1, onDelete),
       itemComparator: (item1, item2) =>
           item1.paidDate.compareTo(item2.paidDate),
       useStickyGroupSeparators: true,

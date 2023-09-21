@@ -23,25 +23,28 @@ class _HomePageState extends State<HomePage> {
 
   _HomePageState(this.repository);
 
-  void showSnackbarMessage(String msg) {
-    ScaffoldMessenger.of(context)
-      ..removeCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(msg)));
+  void showSnackBarMessage(String msg) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(msg)));
+    }
   }
 
-  Widget _showAlertDialog(BuildContext context, int id) {
+  Widget _showDeleteAlertDialog(
+      BuildContext context, int id, bool shouldRedirect) {
     return AlertDialog(
       title: const Text("Do you want to delete selected expense ?",
           style: TextStyle(fontSize: 16)),
       actions: [
         TextButton(
             onPressed: () async {
-              var allExpenses = await repository.deleteExpense(id);
-              setState(() {
-                expenses = allExpenses;
-              });
+              _setExpenseState(await repository.deleteExpense(id));
               if (context.mounted) {
                 Navigator.pop(context);
+                if (shouldRedirect) {
+                  Navigator.pop(context);
+                }
               }
             },
             child: const Text("Yes")),
@@ -54,46 +57,52 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void onDelete(BuildContext context, int id) async {
+  Future<int> _onDelete(
+      BuildContext context, int id, bool shouldRedirect) async {
     showDialog(
-        context: context, builder: (context) => _showAlertDialog(context, id));
+        context: context,
+        builder: (context) =>
+            _showDeleteAlertDialog(context, id, shouldRedirect));
+    return id;
   }
 
-  Future<void> loadAllExpenses() async {
-    var allExpenses = await repository.getAllExpenses();
+  Future<void> _onEdit(EditExpenseModel expense) async {
+    _setExpenseState(await repository.editExpense(expense));
+  }
+
+  void _setExpenseState(List<RawExpenseModel> list) {
     setState(() {
-      expenses = allExpenses;
+      expenses = list;
       isLoaded = true;
     });
   }
 
+  Future<void> _loadAllExpenses() async {
+    _setExpenseState(await repository.getAllExpenses());
+  }
+
   Future<void> _navigateToAddExpensePage(BuildContext context) async {
-    NewExpense expense = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AddExpensePage()),
-    );
+    NewExpense expense = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const AddExpensePage()));
     if (!context.mounted) return;
     if (expense != null) {
-      repository.addNewExpense(expense).then((_) => loadAllExpenses());
-      var msg = '${expense.title}, ${expense.amount}, ${expense.category.name}';
-      showSnackbarMessage(msg);
+      _setExpenseState(await repository.addNewExpense(expense));
+      var msg = 'Expense: ${expense.title} added of amount ${expense.amount}';
+      showSnackBarMessage(msg);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    loadAllExpenses();
-    deleteAction(id) => onDelete(context, id);
+    _loadAllExpenses();
+    deleteAction(id, shouldRedirect) => _onDelete(context, id, shouldRedirect);
     const tabHeaderTextStyle =
-    TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+        TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme
-              .of(context)
-              .colorScheme
-              .inversePrimary,
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text(APP_TITLE),
           bottom: const TabBar(
             labelPadding: EdgeInsets.all(10),
@@ -107,10 +116,10 @@ class _HomePageState extends State<HomePage> {
         body: TabBarView(
           children: [
             isLoaded
-                ? ExpenseView(expenses, deleteAction)
+                ? ExpenseView(expenses, false, deleteAction)
                 : const Center(child: CircularProgressIndicator()),
             isLoaded
-                ? InsightsView(expenses, deleteAction)
+                ? InsightsView(expenses, repository, deleteAction)
                 : const Center(child: CircularProgressIndicator()),
           ],
         ),

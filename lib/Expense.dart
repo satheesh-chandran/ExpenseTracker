@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-typedef DeleteCallback = void Function(int id);
+typedef DeleteCallback = Future<int> Function(int id, bool shouldRedirect);
 
 enum ExpenseCategory {
   education(
@@ -92,6 +92,15 @@ class RawExpenseModel {
       required this.isRefundable,
       required this.refundedAmount,
       required this.deletionMarker});
+}
+
+class EditExpenseModel {
+  final int id;
+  final String title;
+  final int amount;
+  final ExpenseCategory category;
+
+  const EditExpenseModel(this.id, this.title, this.amount, this.category);
 }
 
 class NewExpense {

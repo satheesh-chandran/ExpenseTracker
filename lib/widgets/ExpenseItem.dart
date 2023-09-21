@@ -8,11 +8,14 @@ import 'ExpenseCategoryBar.dart';
 class ExpenseItem extends StatelessWidget {
   final RawExpenseModel expense;
   final DeleteCallback onDelete;
+  final bool shouldRedirect;
 
-  const ExpenseItem(this.expense, this.onDelete, {super.key});
+  const ExpenseItem(this.expense, this.shouldRedirect, this.onDelete,
+      {super.key});
 
   Widget _showAlertDialog(BuildContext context) {
-    return AlertDialog(content: ViewSingleExpensePage(expense, onDelete));
+    return AlertDialog(
+        content: ViewSingleExpensePage(expense, shouldRedirect, onDelete));
   }
 
   @override

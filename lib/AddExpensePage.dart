@@ -26,7 +26,7 @@ class AddExpensePage extends StatefulWidget {
 class _AddExpensePageState extends State<AddExpensePage> {
   ExpenseCategory dropdownValue = ExpenseCategory.miscellaneous;
   var remarksController = TextEditingController();
-  var amountController = TextEditingController(text: "0");
+  var amountController = TextEditingController();
 
   Future<void> _sentDataToHomePage(BuildContext context) async {
     try {
@@ -54,7 +54,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
       body: Center(
           child: Container(
         decoration: getBoxDecorationWithShadow(),
-        height: MediaQuery.of(context).size.height * 0.45,
+        height: MediaQuery.of(context).size.height * 0.55,
         width: MediaQuery.of(context).size.width * 0.8,
         child: Padding(
             padding: const EdgeInsets.all(10),
@@ -110,7 +110,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           ExpenseCategory.values.map((ExpenseCategory value) {
                         return DropdownMenuItem<ExpenseCategory>(
                           value: value,
-                          child: Text(value.qualifiedName.toUpperCase()),
+                          child: Text(value.qualifiedName),
                         );
                       }).toList(),
                       onChanged: (newCategory) {

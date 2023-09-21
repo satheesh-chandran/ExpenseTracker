@@ -17,18 +17,37 @@ class DataRepository {
     }
   }
 
-  Future<int> addNewExpense(NewExpense expense) async {
-    return await database.insert(TABLE_NAME, expense.toMap());
+  Future<List<RawExpenseModel>> addNewExpense(NewExpense expense) async {
+    await database.insert(TABLE_NAME, expense.toMap());
+    return getAllExpenses();
+  }
+
+  Future<List<RawExpenseModel>> editExpense(EditExpenseModel model) async {
+    await database.update(
+        TABLE_NAME,
+        <String, Object?>{
+          'title': model.title,
+          'category': model.category.name,
+          'amount': model.amount
+        },
+        where: 'id = ?',
+        whereArgs: [model.id]);
+    return getAllExpenses();
   }
 
   Future<List<RawExpenseModel>> deleteExpense(int id) async {
-    var deleteQuery = 'id = ?';
-    await database.delete(TABLE_NAME, where: deleteQuery, whereArgs: [id]);
+    await database.delete(TABLE_NAME, where: 'id = ?', whereArgs: [id]);
     return getAllExpenses();
   }
 
   Future<List<RawExpenseModel>> getAllExpenses() async {
     return mapToModelList(await database.query(TABLE_NAME));
+  }
+
+  Future<List<RawExpenseModel>> getAllExpensesOf(
+      ExpenseCategory category) async {
+    return mapToModelList(await database
+        .query(TABLE_NAME, where: 'category = ?', whereArgs: [category.name]));
   }
 
   List<RawExpenseModel> mapToModelList(List<Map<String, dynamic>> mappings) {

@@ -1,3 +1,4 @@
+import 'package:first_flutter_app/DataRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -15,9 +16,11 @@ class ChartData {
 
 class InsightsView extends StatelessWidget {
   final List<RawExpenseModel> expenses;
+  final DataRepository repository;
   final DeleteCallback onDelete;
 
-  const InsightsView(this.expenses, this.onDelete, {super.key});
+  const InsightsView(this.expenses, this.repository, this.onDelete,
+      {super.key});
 
   List<ChartData> _prepareChartData() {
     Map<ExpenseCategory, int> map = <ExpenseCategory, int>{};
@@ -41,10 +44,8 @@ class InsightsView extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) {
-                var categorisedExpenses = expenses
-                    .where((element) => element.category == data.category)
-                    .toList();
-                return CategorisedExpenseView(categorisedExpenses, onDelete);
+                return CategorisedExpenseView(
+                    repository, data.category, onDelete);
               }),
             );
           },
