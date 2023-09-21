@@ -6,8 +6,9 @@ import 'Expense.dart';
 
 class ViewSingleExpensePage extends StatelessWidget {
   final RawExpenseModel expense;
+  final DeleteCallback onDelete;
 
-  const ViewSingleExpensePage(this.expense, {super.key});
+  const ViewSingleExpensePage(this.expense, this.onDelete, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class ViewSingleExpensePage extends StatelessWidget {
         fontSize: 14,
         fontStyle: FontStyle.italic);
     return SizedBox(
-      height: 350,
+      height: 370,
       child: Column(
         children: [
           Text(expense.title,
@@ -55,7 +56,15 @@ class ViewSingleExpensePage extends StatelessWidget {
           ElevatedButton.icon(
               onPressed: () {},
               icon: const Icon(Icons.edit),
-              label: const Text("EDIT EXPENSE"))
+              label: const Text("EDIT EXPENSE")),
+          const ContainerSizeBox(),
+          ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+                onDelete(expense.id);
+              },
+              icon: const Icon(Icons.delete),
+              label: const Text("DELETE"))
         ],
       ),
     );

@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS expense(
 INSERT INTO expense (title, amount, category) VALUES ('Jio recharge', 249, 'Bills');
 INSERT INTO expense (title, amount, category) VALUES ('Groceries', 2500, 'Bills');
 
+DELETE FROM expense WHERE ID = 1;
+
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Kerala vision', 600, 'Bills', '2023-09-01 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Groceries', 3000, 'Bills', '2023-09-01 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Jio recharge', 249, 'Bills', '2023-09-04 09:20:23');

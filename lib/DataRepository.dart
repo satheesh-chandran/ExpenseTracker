@@ -21,19 +21,27 @@ class DataRepository {
     return await database.insert(TABLE_NAME, expense.toMap());
   }
 
-  Future<List<RawExpenseModel>> getAllExpenses() async {
-    final List<Map<String, dynamic>> maps = await database.query(TABLE_NAME);
+  Future<List<RawExpenseModel>> deleteExpense(int id) async {
+    var deleteQuery = 'id = ?';
+    await database.delete(TABLE_NAME, where: deleteQuery, whereArgs: [id]);
+    return getAllExpenses();
+  }
 
-    return List.generate(maps.length, (i) {
+  Future<List<RawExpenseModel>> getAllExpenses() async {
+    return mapToModelList(await database.query(TABLE_NAME));
+  }
+
+  List<RawExpenseModel> mapToModelList(List<Map<String, dynamic>> mappings) {
+    return List.generate(mappings.length, (i) {
       return RawExpenseModel(
-        id: maps[i]['id'],
-        title: maps[i]['title'],
-        amount: maps[i]['amount'],
-        category: ExpenseCategory.values.byName(maps[i]['category']),
-        paidDate: maps[i]['paid_date'],
-        isRefundable: maps[i]['isRefundable'] != 0,
-        refundedAmount: maps[i]['refundedAmount'],
-        deletionMarker: maps[i]['deletionMarker'] != 0,
+        id: mappings[i]['id'],
+        title: mappings[i]['title'],
+        amount: mappings[i]['amount'],
+        category: ExpenseCategory.values.byName(mappings[i]['category']),
+        paidDate: mappings[i]['paid_date'],
+        isRefundable: mappings[i]['isRefundable'] != 0,
+        refundedAmount: mappings[i]['refundedAmount'],
+        deletionMarker: mappings[i]['deletionMarker'] != 0,
       );
     });
   }

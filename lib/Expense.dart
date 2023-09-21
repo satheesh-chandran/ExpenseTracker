@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+typedef DeleteCallback = void Function(int id);
+
 enum ExpenseCategory {
   education(
       "Education",

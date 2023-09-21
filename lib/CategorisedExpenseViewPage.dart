@@ -6,8 +6,9 @@ import 'main.dart';
 
 class CategorisedExpenseView extends StatelessWidget {
   final List<RawExpenseModel> expenses;
+  final DeleteCallback onDelete;
 
-  const CategorisedExpenseView(this.expenses, {super.key});
+  const CategorisedExpenseView(this.expenses, this.onDelete, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class CategorisedExpenseView extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text(APP_TITLE),
       ),
-      body: ExpenseView(expenses),
+      body: ExpenseView(expenses, onDelete),
     );
   }
 }

@@ -15,8 +15,9 @@ class ChartData {
 
 class InsightsView extends StatelessWidget {
   final List<RawExpenseModel> expenses;
+  final DeleteCallback onDelete;
 
-  const InsightsView(this.expenses, {super.key});
+  const InsightsView(this.expenses, this.onDelete, {super.key});
 
   List<ChartData> _prepareChartData() {
     Map<ExpenseCategory, int> map = <ExpenseCategory, int>{};
@@ -39,10 +40,12 @@ class InsightsView extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => CategorisedExpenseView(expenses
-                      .where((element) => element.category == data.category)
-                      .toList())),
+              MaterialPageRoute(builder: (context) {
+                var categorisedExpenses = expenses
+                    .where((element) => element.category == data.category)
+                    .toList();
+                return CategorisedExpenseView(categorisedExpenses, onDelete);
+              }),
             );
           },
           child: ListTile(

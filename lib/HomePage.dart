@@ -8,7 +8,7 @@ import 'Expense.dart';
 import 'main.dart';
 
 class HomePage extends StatefulWidget {
- final DataRepository repository;
+  final DataRepository repository;
 
   const HomePage(this.repository, {super.key});
 
@@ -22,6 +22,42 @@ class _HomePageState extends State<HomePage> {
   bool isLoaded = false;
 
   _HomePageState(this.repository);
+
+  void showSnackbarMessage(String msg) {
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(msg)));
+  }
+
+  Widget _showAlertDialog(BuildContext context, int id) {
+    return AlertDialog(
+      title: const Text("Do you want to delete selected expense ?",
+          style: TextStyle(fontSize: 16)),
+      actions: [
+        TextButton(
+            onPressed: () async {
+              var allExpenses = await repository.deleteExpense(id);
+              setState(() {
+                expenses = allExpenses;
+              });
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+            child: const Text("Yes")),
+        TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+            },
+            child: const Text("No"))
+      ],
+    );
+  }
+
+  void onDelete(BuildContext context, int id) async {
+    showDialog(
+        context: context, builder: (context) => _showAlertDialog(context, id));
+  }
 
   Future<void> loadAllExpenses() async {
     var allExpenses = await repository.getAllExpenses();
@@ -40,22 +76,24 @@ class _HomePageState extends State<HomePage> {
     if (expense != null) {
       repository.addNewExpense(expense).then((_) => loadAllExpenses());
       var msg = '${expense.title}, ${expense.amount}, ${expense.category.name}';
-      ScaffoldMessenger.of(context)
-        ..removeCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(msg)));
+      showSnackbarMessage(msg);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     loadAllExpenses();
+    deleteAction(id) => onDelete(context, id);
     const tabHeaderTextStyle =
-        TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+    TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .inversePrimary,
           title: const Text(APP_TITLE),
           bottom: const TabBar(
             labelPadding: EdgeInsets.all(10),
@@ -69,10 +107,10 @@ class _HomePageState extends State<HomePage> {
         body: TabBarView(
           children: [
             isLoaded
-                ? ExpenseView(expenses)
+                ? ExpenseView(expenses, deleteAction)
                 : const Center(child: CircularProgressIndicator()),
             isLoaded
-                ? InsightsView(expenses)
+                ? InsightsView(expenses, deleteAction)
                 : const Center(child: CircularProgressIndicator()),
           ],
         ),
