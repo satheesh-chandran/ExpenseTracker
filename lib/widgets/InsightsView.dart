@@ -117,6 +117,7 @@ class InsightsView extends StatelessWidget {
         SfCircularChart(
           series: <CircularSeries>[
             DoughnutSeries<ChartData, String>(
+                animationDuration: 1000,
                 dataSource: chartData,
                 pointColorMapper: (ChartData data, _) => data.category.color,
                 xValueMapper: (ChartData data, _) => data.category.name,

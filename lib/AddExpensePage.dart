@@ -77,6 +77,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 ),
                 const ContainerSizeBox(),
                 TextFormField(
+                  maxLength: 55,
                   controller: remarksController,
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
@@ -85,6 +86,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 ),
                 const ContainerSizeBox(),
                 TextFormField(
+                  maxLength: 10,
                   controller: amountController,
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
@@ -118,11 +120,12 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       }),
                 ),
                 const ContainerSizeBox(),
-                ElevatedButton(
+                ElevatedButton.icon(
                     onPressed: () {
                       _sentDataToHomePage(context);
                     },
-                    child: const Text("ADD EXPENSE"))
+                    icon: const Icon(Icons.add),
+                    label: const Text("ADD EXPENSE"))
               ],
             )),
       )),
