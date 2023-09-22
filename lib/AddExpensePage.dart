@@ -18,30 +18,44 @@ class ContainerSizeBox extends StatelessWidget {
   }
 }
 
-class AddAndEditExpensePage extends StatefulWidget {
-  final Expense? expense;
+abstract class AddNewPage extends StatefulWidget {
+  final String remarks;
+  final String amountText;
+  final String formTitle;
+  final ExpenseCategory category;
+  final IconData iconData;
+  final String? dateValue;
 
-  const AddAndEditExpensePage({super.key, this.expense});
+  const AddNewPage(
+      {super.key,
+      this.remarks = "",
+      this.amountText = "",
+      this.category = ExpenseCategory.miscellaneous,
+      this.formTitle = "Add Expense",
+      this.iconData = Icons.add,
+      this.dateValue});
 
   @override
-  AddAndEditExpensePageState createState() {
-    return AddAndEditExpensePageState(expense);
+  State<StatefulWidget> createState() {
+    return AddNewPageState(
+        remarks, amountText, category, formTitle, iconData, dateValue);
   }
 }
 
-class AddAndEditExpensePageState extends State<AddAndEditExpensePage> {
-  late ExpenseCategory dropdownValue;
+class AddNewPageState extends State<AddNewPage> {
+  final String formTitle;
+  final IconData iconData;
 
+  late ExpenseCategory category;
   late TextEditingController remarksController;
   late TextEditingController amountController;
+  late String formDateValue;
 
-  Expense? expense;
-
-  AddAndEditExpensePageState(this.expense) {
-    remarksController = TextEditingController(text: expense?.title ?? "");
-    amountController =
-        TextEditingController(text: expense?.amount.round().toString() ?? "");
-    dropdownValue = expense?.category ?? ExpenseCategory.miscellaneous;
+  AddNewPageState(String remarks, String amountText, this.category,
+      this.formTitle, this.iconData, String? dateValue) {
+    remarksController = TextEditingController(text: remarks);
+    amountController = TextEditingController(text: amountText);
+    formDateValue = createFormDateValue(dateValue);
   }
 
   Future<void> _sentDataToHomePage(BuildContext context) async {
@@ -49,7 +63,7 @@ class AddAndEditExpensePageState extends State<AddAndEditExpensePage> {
       var amount = int.parse(amountController.text);
       var remark = remarksController.text.trim();
       if (remark.isEmpty) throw Exception("Remarks required");
-      var expense = NewExpense(remark, amount, dropdownValue);
+      var expense = NewExpense(remark, amount, category);
       Navigator.pop(context, expense);
     } on Exception {
       const errorMsg = "Unable to add expense, try editing the values";
@@ -59,16 +73,15 @@ class AddAndEditExpensePageState extends State<AddAndEditExpensePage> {
     }
   }
 
-  String _getFormDateString() {
-    if (expense == null) {
-      return DateFormat(DATE_FORMAT).format(DateTime.now());
-    }
-    return DateFormat(DATE_FORMAT).format(DateTime.parse(expense!.paidDate));
+  InputDecoration _createInputDecoration(String label) {
+    return InputDecoration(
+      border: const UnderlineInputBorder(),
+      labelText: label,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    var formTitle = expense == null ? "Add Expense" : "Edit Expense";
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -92,7 +105,7 @@ class AddAndEditExpensePageState extends State<AddAndEditExpensePage> {
                 ),
                 const ContainerSizeBox(),
                 Text(
-                  _getFormDateString(),
+                  formDateValue,
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
@@ -102,10 +115,7 @@ class AddAndEditExpensePageState extends State<AddAndEditExpensePage> {
                 TextFormField(
                   maxLength: 55,
                   controller: remarksController,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    labelText: 'Remarks',
-                  ),
+                  decoration: _createInputDecoration('Remarks'),
                 ),
                 const ContainerSizeBox(),
                 TextFormField(
@@ -115,18 +125,14 @@ class AddAndEditExpensePageState extends State<AddAndEditExpensePage> {
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly
                   ],
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    labelText: 'Amount',
-                  ),
+                  decoration: _createInputDecoration('Amount'),
                 ),
                 const ContainerSizeBox(),
                 ListTile(
-                  leading: ExpenseCategoryBar(
-                      dropdownValue.icon, dropdownValue.color),
+                  leading: ExpenseCategoryBar(category.icon, category.color),
                   trailing: const Icon(Icons.add),
                   title: DropdownButton(
-                      value: dropdownValue,
+                      value: category,
                       underline: Container(),
                       isExpanded: true,
                       items:
@@ -138,7 +144,7 @@ class AddAndEditExpensePageState extends State<AddAndEditExpensePage> {
                       }).toList(),
                       onChanged: (newCategory) {
                         setState(() {
-                          dropdownValue = newCategory!;
+                          category = newCategory!;
                         });
                       }),
                 ),
@@ -147,11 +153,35 @@ class AddAndEditExpensePageState extends State<AddAndEditExpensePage> {
                     onPressed: () {
                       _sentDataToHomePage(context);
                     },
-                    icon: Icon(expense == null ? Icons.add : Icons.edit),
+                    icon: Icon(iconData),
                     label: Text(formTitle.toUpperCase()))
               ],
             )),
       )),
     );
   }
+
+  static createFormDateValue(String? source) {
+    if (source == null) {
+      return DateFormat(DATE_FORMAT).format(DateTime.now());
+    }
+    return DateFormat(DATE_FORMAT).format(DateTime.parse(source));
+  }
+}
+
+class AddNewExpensePage extends AddNewPage {
+  const AddNewExpensePage({super.key});
+}
+
+class EditExpensePage extends AddNewPage {
+  final Expense expense;
+
+  EditExpensePage(this.expense, {super.key})
+      : super(
+            category: expense.category,
+            iconData: Icons.edit,
+            remarks: expense.title,
+            amountText: expense.amount.round().toString(),
+            formTitle: "Edit Expense",
+            dateValue: expense.paidDate);
 }

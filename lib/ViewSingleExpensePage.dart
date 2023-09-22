@@ -21,10 +21,8 @@ class ViewSingleExpensePage extends StatelessWidget {
 
   void _toEditPage(BuildContext context) async {
     Navigator.pop(context);
-    NewExpense newExpense = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => AddAndEditExpensePage(expense: expense)));
+    NewExpense newExpense = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => EditExpensePage(expense)));
     if (newExpense != null) {
       var editExpenseModel = EditExpenseModel(
           expense.id, newExpense.title, newExpense.amount, newExpense.category);

@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _navigateToAddExpensePage(BuildContext context) async {
     NewExpense expense = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const AddAndEditExpensePage()));
+        MaterialPageRoute(builder: (context) => const AddNewExpensePage()));
     if (!context.mounted) return;
     if (expense != null) {
       _setExpenseState(await repository.addNewExpense(expense));
