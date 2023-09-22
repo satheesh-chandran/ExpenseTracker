@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../CategorisedExpenseViewPage.dart';
-import '../Expense.dart';
+import '../models/Expense.dart';
+import '../models/ExpenseCategory.dart';
 import 'ExpenseCategoryBar.dart';
 import 'ExpenseView.dart';
 
@@ -15,7 +16,7 @@ class ChartData {
 }
 
 class InsightsView extends StatelessWidget {
-  final List<RawExpenseModel> expenses;
+  final List<Expense> expenses;
   final DataRepository repository;
   final DeleteCallback onDelete;
   final EditCallback onEdit;

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 
-import '../Expense.dart';
+import '../models/Expense.dart';
+import '../models/ExpenseCategory.dart';
 import 'ExpenseItem.dart';
 
 BoxDecoration getBoxDecorationWithShadow() {
@@ -20,7 +21,7 @@ BoxDecoration getBoxDecorationWithShadow() {
 }
 
 class ExpenseView extends StatelessWidget {
-  final List<RawExpenseModel> expenses;
+  final List<Expense> expenses;
   final DeleteCallback onDelete;
   final bool shouldRedirect;
   final EditCallback onEdit;
@@ -31,7 +32,7 @@ class ExpenseView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GroupedListView<RawExpenseModel, String>(
+    return GroupedListView<Expense, String>(
       elements: expenses,
       shrinkWrap: true,
       groupBy: (element) => element.paidDate.split(" ")[0],
@@ -64,7 +65,7 @@ class ExpenseView extends StatelessWidget {
               ],
             ));
       },
-      itemBuilder: (context, RawExpenseModel element) =>
+      itemBuilder: (context, Expense element) =>
           ExpenseItem(element, expenses.length <= 1, onDelete, onEdit),
       itemComparator: (item1, item2) =>
           item1.paidDate.compareTo(item2.paidDate),

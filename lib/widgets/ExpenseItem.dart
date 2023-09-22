@@ -1,12 +1,13 @@
 import 'package:first_flutter_app/widgets/ExpenseView.dart';
 import 'package:flutter/material.dart';
 
-import '../Expense.dart';
+import '../models/Expense.dart';
 import '../ViewSingleExpensePage.dart';
+import '../models/ExpenseCategory.dart';
 import 'ExpenseCategoryBar.dart';
 
 class ExpenseItem extends StatelessWidget {
-  final RawExpenseModel expense;
+  final Expense expense;
   final DeleteCallback onDelete;
   final bool shouldRedirect;
   final EditCallback onEdit;

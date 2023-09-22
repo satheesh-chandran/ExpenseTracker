@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 
 import 'AddExpensePage.dart';
 import 'DataRepository.dart';
-import 'Expense.dart';
+import 'models/EditExpenseModel.dart';
+import 'models/Expense.dart';
 import 'main.dart';
+import 'models/NewExpense.dart';
 
 class HomePage extends StatefulWidget {
   final DataRepository repository;
@@ -18,7 +20,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final DataRepository repository;
-  List<RawExpenseModel> expenses = [];
+  List<Expense> expenses = [];
   bool isLoaded = false;
 
   _HomePageState(this.repository);
@@ -70,7 +72,7 @@ class _HomePageState extends State<HomePage> {
     _setExpenseState(await repository.editExpense(expense));
   }
 
-  void _setExpenseState(List<RawExpenseModel> list) {
+  void _setExpenseState(List<Expense> list) {
     setState(() {
       expenses = list;
       isLoaded = true;

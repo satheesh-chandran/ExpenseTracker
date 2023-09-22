@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-import 'Expense.dart';
+import 'models/Expense.dart';
 import 'main.dart';
+import 'models/ExpenseCategory.dart';
+import 'models/NewExpense.dart';
 
 class ContainerSizeBox extends StatelessWidget {
   const ContainerSizeBox({super.key});
@@ -17,7 +19,7 @@ class ContainerSizeBox extends StatelessWidget {
 }
 
 class AddAndEditExpensePage extends StatefulWidget {
-  final RawExpenseModel? expense;
+  final Expense? expense;
 
   const AddAndEditExpensePage({super.key, this.expense});
 
@@ -33,7 +35,7 @@ class AddAndEditExpensePageState extends State<AddAndEditExpensePage> {
   late TextEditingController remarksController;
   late TextEditingController amountController;
 
-  RawExpenseModel? expense;
+  Expense? expense;
 
   AddAndEditExpensePageState(this.expense) {
     remarksController = TextEditingController(text: expense?.title ?? "");

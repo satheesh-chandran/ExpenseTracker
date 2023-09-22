@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'EditExpenseModel.dart';
+
 typedef DeleteCallback = Future<int> Function(int id, bool shouldRedirect);
 typedef EditCallback = void Function(EditExpenseModel model);
 
@@ -63,73 +65,4 @@ enum ExpenseCategory {
   final Color color;
 
   const ExpenseCategory(this.qualifiedName, this.icon, this.color);
-}
-
-enum FilterCategory {
-  since,
-  dateRange,
-  lastMonth,
-  lastWeek,
-  lastThreeMonths,
-  lastSixMonths
-}
-
-class RawExpenseModel {
-  final int id;
-  final String title;
-  final double amount;
-  final ExpenseCategory category;
-  final String paidDate;
-  final bool isRefundable;
-  final double refundedAmount;
-  final bool deletionMarker;
-
-  const RawExpenseModel(
-      {required this.id,
-      required this.title,
-      required this.amount,
-      required this.category,
-      required this.paidDate,
-      required this.isRefundable,
-      required this.refundedAmount,
-      required this.deletionMarker});
-}
-
-class EditExpenseModel {
-  final int id;
-  final String title;
-  final int amount;
-  final ExpenseCategory category;
-
-  const EditExpenseModel(this.id, this.title, this.amount, this.category);
-}
-
-class NewExpense {
-  final String title;
-  final int amount;
-  final ExpenseCategory category;
-
-  const NewExpense(this.title, this.amount, this.category);
-
-  Map<String, dynamic> toMap() {
-    return {
-      'title': title,
-      'amount': amount,
-      'category': category.name,
-    };
-  }
-}
-
-class Dummy {
-  final String title;
-  final double amount;
-  final ExpenseCategory category;
-  final String paidDate;
-
-  const Dummy({
-    required this.title,
-    required this.amount,
-    required this.category,
-    required this.paidDate,
-  });
 }

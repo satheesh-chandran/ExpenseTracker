@@ -2,8 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
-import 'Expense.dart';
+import 'models/EditExpenseModel.dart';
+import 'models/Expense.dart';
 import 'main.dart';
+import 'models/ExpenseCategory.dart';
+import 'models/NewExpense.dart';
 
 class DataRepository {
   Database database;
@@ -17,12 +20,12 @@ class DataRepository {
     }
   }
 
-  Future<List<RawExpenseModel>> addNewExpense(NewExpense expense) async {
+  Future<List<Expense>> addNewExpense(NewExpense expense) async {
     await database.insert(TABLE_NAME, expense.toMap());
     return getAllExpenses();
   }
 
-  Future<List<RawExpenseModel>> editExpense(EditExpenseModel model) async {
+  Future<List<Expense>> editExpense(EditExpenseModel model) async {
     await database.update(
         TABLE_NAME,
         <String, Object?>{
@@ -35,24 +38,23 @@ class DataRepository {
     return getAllExpenses();
   }
 
-  Future<List<RawExpenseModel>> deleteExpense(int id) async {
+  Future<List<Expense>> deleteExpense(int id) async {
     await database.delete(TABLE_NAME, where: 'id = ?', whereArgs: [id]);
     return getAllExpenses();
   }
 
-  Future<List<RawExpenseModel>> getAllExpenses() async {
+  Future<List<Expense>> getAllExpenses() async {
     return mapToModelList(await database.query(TABLE_NAME));
   }
 
-  Future<List<RawExpenseModel>> getAllExpensesOf(
-      ExpenseCategory category) async {
+  Future<List<Expense>> getAllExpensesOf(ExpenseCategory category) async {
     return mapToModelList(await database
         .query(TABLE_NAME, where: 'category = ?', whereArgs: [category.name]));
   }
 
-  List<RawExpenseModel> mapToModelList(List<Map<String, dynamic>> mappings) {
+  List<Expense> mapToModelList(List<Map<String, dynamic>> mappings) {
     return List.generate(mappings.length, (i) {
-      return RawExpenseModel(
+      return Expense(
         id: mappings[i]['id'],
         title: mappings[i]['title'],
         amount: mappings[i]['amount'],
