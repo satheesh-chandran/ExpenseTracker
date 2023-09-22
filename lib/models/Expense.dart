@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'ExpenseCategory.dart';
 
 class Expense {

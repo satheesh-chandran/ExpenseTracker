@@ -11,9 +11,11 @@ import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'HomePage.dart';
 
 const String APP_TITLE = 'Budget tracker';
-const String TABLE_NAME = 'expense';
+const String EXPENSE_TABLE_NAME = 'expense';
+const String FAVOURITE_TABLE_NAME = 'favourites';
 const String DATE_FORMAT = 'dd MMMM yyyy, hh:mm aaa';
-const String EXPENSE_TABLE_SCHEMA = 'CREATE TABLE IF NOT EXISTS $TABLE_NAME('
+const String EXPENSE_TABLE_SCHEMA =
+    'CREATE TABLE IF NOT EXISTS $EXPENSE_TABLE_NAME('
     'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
     'title VARCHAR(100) NOT NULL,'
     'amount REAL NOT NULL,'
@@ -22,6 +24,13 @@ const String EXPENSE_TABLE_SCHEMA = 'CREATE TABLE IF NOT EXISTS $TABLE_NAME('
     'isRefundable INTEGER DEFAULT 0,'
     'refundedAmount REAL DEFAULT 0,'
     'deletionMarker INTEGER DEFAULT 0);';
+
+const String FAVOURITE_TABLE_SCHEMA =
+    'CREATE TABLE IF NOT EXISTS $FAVOURITE_TABLE_NAME('
+    'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
+    'title VARCHAR(100) NOT NULL,'
+    'amount REAL NOT NULL,'
+    'category VARCHAR(100) NOT NULL);';
 
 const String expense1 =
     'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Kerala vision\', 600, \'bills\', \'2023-09-01 09:20:23\');';
