@@ -1,4 +1,6 @@
+import 'package:first_flutter_app/models/Favourite.dart';
 import 'package:first_flutter_app/widgets/ExpenseView.dart';
+import 'package:first_flutter_app/widgets/FavouriteView.dart';
 import 'package:first_flutter_app/widgets/InsightsView.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +23,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final DataRepository repository;
   List<Expense> expenses = [];
+  List<Favourite> favourites = [];
   bool isLoaded = false;
 
   _HomePageState(this.repository);
@@ -83,6 +86,13 @@ class _HomePageState extends State<HomePage> {
     _setExpenseState(await repository.getAllExpenses());
   }
 
+  Future<void> _loadAllFavourites() async {
+    List<Favourite> list = await repository.getAllFavouriteExpenses();
+    setState(() {
+      favourites = list;
+    });
+  }
+
   Future<void> _navigateToAddExpensePage(BuildContext context) async {
     NewExpense expense = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => const AddAndEditExpensePage()));
@@ -96,12 +106,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _loadAllFavourites();
     _loadAllExpenses();
     deleteAction(id, shouldRedirect) => _onDelete(context, id, shouldRedirect);
     const tabHeaderTextStyle =
         TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -112,6 +123,7 @@ class _HomePageState extends State<HomePage> {
             tabs: [
               Text("Expenses", style: tabHeaderTextStyle),
               Text("Insights", style: tabHeaderTextStyle),
+              Text("Favourites", style: tabHeaderTextStyle),
             ],
           ),
         ),
@@ -123,6 +135,7 @@ class _HomePageState extends State<HomePage> {
             isLoaded
                 ? InsightsView(expenses, repository, deleteAction, _onEdit)
                 : const Center(child: CircularProgressIndicator()),
+            FavouritesView(favourites)
           ],
         ),
         floatingActionButton: FloatingActionButton(

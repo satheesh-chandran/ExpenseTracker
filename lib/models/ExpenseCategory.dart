@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'EditExpenseModel.dart';
-
-typedef DeleteCallback = Future<int> Function(int id, bool shouldRedirect);
-typedef EditCallback = void Function(EditExpenseModel model);
-
 enum ExpenseCategory {
   education(
       "Education",

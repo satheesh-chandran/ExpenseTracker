@@ -16,10 +16,10 @@ class DataRepository {
   DataRepository(this.database);
 
   void loadSchema() async {
-    await database.execute(EXPENSE_TABLE_SCHEMA);
-    await database.execute(FAVOURITE_TABLE_SCHEMA);
+    await database.execute('$EXPENSE_TABLE_SCHEMA\n$FAVOURITE_TABLE_SCHEMA');
     if (kIsWeb) {
       await database.execute(joinedQuery);
+      await database.execute(loadFavouriteQuery);
     }
   }
 
@@ -67,13 +67,13 @@ class DataRepository {
   // endregion
 
   // region Favourites
+  Future<List<Favourite>> getAllFavouriteExpenses() async {
+    return _mapToModelFavouriteList(await _getAll(FAVOURITE_TABLE_NAME));
+  }
+
   Future<List<Favourite>> addNewFavouriteExpense(NewExpense expense) async {
     await _addExpense(expense, FAVOURITE_TABLE_NAME);
     return getAllFavouriteExpenses();
-  }
-
-  Future<List<Favourite>> getAllFavouriteExpenses() async {
-    return _mapToModelFavouriteList(await _getAll(FAVOURITE_TABLE_NAME));
   }
 
   Future<List<Favourite>> deleteFavouriteExpense(int id) async {

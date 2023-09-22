@@ -48,6 +48,15 @@ const String expense12 =
 const String expense13 =
     'INSERT INTO expense (title, amount, category, paid_date) VALUES (\'Onam dress purchage\', 3100, \'shopping\', \'2023-08-17 09:20:23\');';
 
+const String fav1 =
+    'INSERT INTO $FAVOURITE_TABLE_NAME (title, amount, category) VALUES (\'Home loan installment\', 8000, \'emi\');';
+
+const String fav2 =
+    'INSERT INTO $FAVOURITE_TABLE_NAME (title, amount, category) VALUES (\'Gold bond\', 4000, \'investments\');';
+
+const String fav3 =
+    'INSERT INTO $FAVOURITE_TABLE_NAME (title, amount, category) VALUES (\'LPG gas\', 1100, \'bills\');';
+
 var joinedQuery = [
   expense1,
   expense2,
@@ -63,3 +72,5 @@ var joinedQuery = [
   expense12,
   expense13,
 ].join("\n");
+
+var loadFavouriteQuery = [fav1, fav2, fav3].join("\n");

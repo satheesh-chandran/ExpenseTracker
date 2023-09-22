@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../CategorisedExpenseViewPage.dart';
+import '../models/CallBacks.dart';
 import '../models/Expense.dart';
 import '../models/ExpenseCategory.dart';
 import 'ExpenseCategoryBar.dart';

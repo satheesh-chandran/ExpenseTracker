@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 
+import '../models/CallBacks.dart';
 import '../models/Expense.dart';
-import '../models/ExpenseCategory.dart';
 import 'ExpenseItem.dart';
 
 BoxDecoration getBoxDecorationWithShadow() {
@@ -22,8 +22,8 @@ BoxDecoration getBoxDecorationWithShadow() {
 
 class ExpenseView extends StatelessWidget {
   final List<Expense> expenses;
-  final DeleteCallback onDelete;
   final bool shouldRedirect;
+  final DeleteCallback onDelete;
   final EditCallback onEdit;
 
   const ExpenseView(

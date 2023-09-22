@@ -26,3 +26,13 @@ INSERT INTO expense (title, amount, category, paid_date) VALUES ('Fruits and veg
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Home loan EMI', 7500, 'Bills', '2023-09-14 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Bike EMI', 2700, 'Bills', '2023-09-17 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Onam dress purchage', 3100, 'Bills', '2023-08-17 09:20:23');
+
+CREATE TABLE IF NOT EXISTS favourites(
+       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+       title VARCHAR(100) NOT NULL,
+       amount REAL NOT NULL,
+       category VARCHAR(100) NOT NULL);
+
+INSERT INTO favourites (title, amount, category) VALUES ('Home loan installment', 8000, 'emi');
+INSERT INTO favourites (title, amount, category) VALUES ('Gold bond', 4000, 'investments');
+INSERT INTO favourites (title, amount, category) VALUES ('LPG gas', 1100, 'bills');
