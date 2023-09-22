@@ -2,8 +2,8 @@ import 'package:first_flutter_app/DataRepository.dart';
 import 'package:first_flutter_app/widgets/ExpenseView.dart';
 import 'package:flutter/material.dart';
 
+import 'Constants.dart';
 import 'models/Expense.dart';
-import 'main.dart';
 import 'models/ExpenseCategory.dart';
 
 class CategorisedExpenseView extends StatefulWidget {

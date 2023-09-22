@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'AddExpensePage.dart';
+import 'Constants.dart';
 import 'models/EditExpenseModel.dart';
 import 'models/Expense.dart';
-import 'main.dart';
 import 'models/ExpenseCategory.dart';
 import 'models/NewExpense.dart';
 

@@ -3,10 +3,10 @@ import 'package:first_flutter_app/widgets/InsightsView.dart';
 import 'package:flutter/material.dart';
 
 import 'AddExpensePage.dart';
+import 'Constants.dart';
 import 'DataRepository.dart';
 import 'models/EditExpenseModel.dart';
 import 'models/Expense.dart';
-import 'main.dart';
 import 'models/NewExpense.dart';
 
 class HomePage extends StatefulWidget {
