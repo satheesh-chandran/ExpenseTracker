@@ -93,10 +93,20 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _onAddFavourite(NewExpense expense) async {
+    List<Favourite> list = await repository.addNewFavouriteExpense(expense);
+    setState(() {
+      favourites = list;
+    });
+    var msg =
+        'Favourite Expense: ${expense.title} added of amount ${expense.amount}';
+    _showSnackBarMessage(msg);
+  }
+
   Future<void> _navigateToAddExpensePage(BuildContext context) async {
     NewExpense expense = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => const AddNewExpensePage()));
-    if (!context.mounted) return;
+    if (!mounted) return;
     if (expense != null) {
       _setExpenseState(await repository.addNewExpense(expense));
       var msg = 'Expense: ${expense.title} added of amount ${expense.amount}';
@@ -135,7 +145,7 @@ class _HomePageState extends State<HomePage> {
             isLoaded
                 ? InsightsView(expenses, repository, deleteAction, _onEdit)
                 : const Center(child: CircularProgressIndicator()),
-            FavouritesView(favourites)
+            FavouritesView(favourites, _onAddFavourite)
           ],
         ),
         floatingActionButton: FloatingActionButton(

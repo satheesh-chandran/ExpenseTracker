@@ -185,3 +185,10 @@ class EditExpensePage extends AddNewPage {
             formTitle: "Edit Expense",
             dateValue: expense.paidDate);
 }
+
+class AddNewFavouritePage extends AddNewPage {
+  const AddNewFavouritePage({super.key})
+      : super(
+          formTitle: "Add Favourite Expense",
+        );
+}

@@ -1,7 +1,9 @@
 import 'package:first_flutter_app/AddExpensePage.dart';
 import 'package:flutter/material.dart';
 
+import '../models/CallBacks.dart';
 import '../models/Favourite.dart';
+import '../models/NewExpense.dart';
 import 'ExpenseCategoryBar.dart';
 import 'ExpenseView.dart';
 
@@ -43,8 +45,17 @@ class FavouriteItem extends StatelessWidget {
 
 class FavouritesView extends StatelessWidget {
   final List<Favourite> favourites;
+  final NewExpenseCallback onAddFavourite;
 
-  const FavouritesView(this.favourites, {super.key});
+  const FavouritesView(this.favourites, this.onAddFavourite, {super.key});
+
+  void _addNewFavourite(BuildContext context) async {
+    NewExpense expense = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const AddNewFavouritePage()));
+    if (expense != null) {
+      onAddFavourite(expense);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +77,11 @@ class FavouritesView extends StatelessWidget {
                 fontWeight: FontWeight.w800),
           )),
       const ContainerSizeBox(),
-      ElevatedButton(onPressed: () {}, child: const Text(btnText)),
+      ElevatedButton(
+          onPressed: () {
+            _addNewFavourite(context);
+          },
+          child: const Text(btnText)),
       const ContainerSizeBox(),
       ...favouriteItemList,
     ]));
