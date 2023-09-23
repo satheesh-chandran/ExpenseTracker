@@ -1,3 +1,4 @@
+import 'package:first_flutter_app/models/ExpenseCategory.dart';
 import 'package:first_flutter_app/widgets/ExpenseCategoryBar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,30 +10,63 @@ import 'models/EditExpenseModel.dart';
 import 'models/Expense.dart';
 import 'models/NewExpense.dart';
 
-class ViewSingleExpensePage extends StatelessWidget {
-  final Expense expense;
+abstract class ViewSinglePage extends StatelessWidget {
+  final int id;
+  final String title;
+  final double amount;
+  final ExpenseCategory category;
+  final String? paidDate;
+
   final DeleteCallback onDelete;
   final bool shouldRedirect;
-  final EditCallback onEdit;
 
-  const ViewSingleExpensePage(
-      this.expense, this.shouldRedirect, this.onDelete, this.onEdit,
-      {super.key});
+  const ViewSinglePage(this.id, this.title, this.amount, this.category,
+      {super.key,
+      required this.onDelete,
+      required this.shouldRedirect,
+      this.paidDate});
 
-  void _toEditPage(BuildContext context) async {
-    Navigator.pop(context);
-    NewExpense newExpense = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => EditExpensePage(expense)));
-    if (newExpense != null) {
-      var editExpenseModel = EditExpenseModel(
-          expense.id, newExpense.title, newExpense.amount, newExpense.category);
-      onEdit(editExpenseModel);
+  void _toEditPage(BuildContext context);
+
+  List<Widget> _getDateTile(BuildContext context, TextStyle textStyle) {
+    if (paidDate == null) {
+      return [];
     }
+
+    return [
+      const ContainerSizeBox(),
+      ListTile(
+        leading: ExpenseCategoryBar(
+            const Icon(
+              Icons.date_range,
+              color: Colors.white,
+            ),
+            Theme.of(context).primaryColor),
+        title: Text(DateFormat(DATE_FORMAT).format(DateTime.parse(paidDate!)),
+            style: textStyle),
+      ),
+    ];
+  }
+
+  List<Widget> _getFavouriteOnlyOptions(BuildContext context) {
+    if (paidDate == null) {
+      return [
+        const ContainerSizeBox(),
+        ElevatedButton.icon(
+            onPressed: () {
+              Navigator.pop(context);
+              onDelete(id, shouldRedirect);
+            },
+            icon: const Icon(Icons.add),
+            label: const Text("ADD TO EXPENSE"))
+      ];
+    }
+
+    return [];
   }
 
   @override
   Widget build(BuildContext context) {
-    var category = expense.category;
     var textStyle = TextStyle(
         color: Theme.of(context).primaryColor,
         fontSize: 14,
@@ -41,7 +75,7 @@ class ViewSingleExpensePage extends StatelessWidget {
       height: 390,
       child: Column(
         children: [
-          Text(expense.title,
+          Text(title,
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontSize: 16,
@@ -55,43 +89,58 @@ class ViewSingleExpensePage extends StatelessWidget {
                   color: Colors.white,
                 ),
                 Theme.of(context).primaryColor),
-            title: Text(expense.amount.round().toString(), style: textStyle),
+            title: Text(amount.round().toString(), style: textStyle),
           ),
-          const ContainerSizeBox(),
-          ListTile(
-            leading: ExpenseCategoryBar(
-                const Icon(
-                  Icons.date_range,
-                  color: Colors.white,
-                ),
-                Theme.of(context).primaryColor),
-            title: Text(
-                DateFormat(DATE_FORMAT)
-                    .format(DateTime.parse(expense.paidDate)),
-                style: textStyle),
-          ),
+          ..._getDateTile(context, textStyle),
           const ContainerSizeBox(),
           ListTile(
             leading: ExpenseCategoryBar(category.icon, category.color),
             title: Text(category.qualifiedName, style: textStyle),
           ),
+          ..._getFavouriteOnlyOptions(context),
           const ContainerSizeBox(),
           ElevatedButton.icon(
               onPressed: () {
                 _toEditPage(context);
               },
               icon: const Icon(Icons.edit),
-              label: const Text("EDIT EXPENSE")),
+              label:
+                  Text(paidDate != null ? "EDIT EXPENSE" : "EDIT FAVOURITE")),
           const ContainerSizeBox(),
           ElevatedButton.icon(
               onPressed: () {
                 Navigator.pop(context);
-                onDelete(expense.id, shouldRedirect);
+                onDelete(id, shouldRedirect);
               },
               icon: const Icon(Icons.delete),
               label: const Text("DELETE"))
         ],
       ),
     );
+  }
+}
+
+class ViewSingleExpensePage extends ViewSinglePage {
+  final Expense expense;
+  final EditCallback onEdit;
+
+  ViewSingleExpensePage(
+      this.expense, bool shouldRedirect, DeleteCallback onDelete, this.onEdit,
+      {super.key})
+      : super(expense.id, expense.title, expense.amount, expense.category,
+            onDelete: onDelete,
+            shouldRedirect: shouldRedirect,
+            paidDate: expense.paidDate);
+
+  @override
+  void _toEditPage(BuildContext context) async {
+    Navigator.pop(context);
+    NewExpense newExpense = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => EditExpensePage(expense)));
+    if (newExpense != null) {
+      var editExpenseModel = EditExpenseModel(
+          expense.id, newExpense.title, newExpense.amount, newExpense.category);
+      onEdit(editExpenseModel);
+    }
   }
 }
