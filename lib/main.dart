@@ -1,6 +1,5 @@
 import 'dart:io' as io;
 
-import 'package:first_flutter_app/DataRepository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
@@ -8,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'Constants.dart';
+import 'DataRepository.dart';
 import 'HomePage.dart';
 
 Future<String> getDataBasePath() async {
@@ -22,14 +22,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
   DataRepository repository = await DataRepository.initialise();
-  repository.loadSchema();
-  runApp(MyApp(repository));
+  runApp(ExpenseTrackerApp(repository));
 }
 
-class MyApp extends StatelessWidget {
-  DataRepository repository;
+class ExpenseTrackerApp extends StatelessWidget {
+  final DataRepository repository;
 
-  MyApp(this.repository, {super.key});
+  const ExpenseTrackerApp(this.repository, {super.key});
 
   @override
   Widget build(BuildContext context) {

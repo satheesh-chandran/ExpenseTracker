@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 
-import '../models/CallBacks.dart';
-import '../models/Expense.dart';
 import '../ViewSingleExpensePage.dart';
+import '../models/CallBacks.dart';
+import '../models/Favourite.dart';
 import 'ExpenseCategoryBar.dart';
 import 'ExpenseView.dart';
 
-class ExpenseItem extends StatelessWidget {
-  final Expense expense;
-  final DeleteCallback onDelete;
-  final bool shouldRedirect;
+class FavouriteItem extends StatelessWidget {
+  final Favourite favourite;
   final EditCallback onEdit;
+  final DeleteCallback onDelete;
+  final NewExpenseCallback onAddFromFavourite;
 
-  const ExpenseItem(
-      this.expense, this.shouldRedirect, this.onDelete, this.onEdit,
+  const FavouriteItem(
+      this.favourite, this.onEdit, this.onDelete, this.onAddFromFavourite,
       {super.key});
 
   Widget _showAlertDialog(BuildContext context) {
     return AlertDialog(
-        content:
-            ViewSingleExpensePage(expense, shouldRedirect, onDelete, onEdit));
+        content: ViewSingleFavouritePage(
+            favourite, false, onDelete, onEdit, onAddFromFavourite));
   }
 
   @override
@@ -30,23 +30,23 @@ class ExpenseItem extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
         fontStyle: FontStyle.italic,
         fontWeight: FontWeight.w500);
-    var category = expense.category;
-    return GestureDetector(
-        onTap: () {
-          showDialog(context: context, builder: _showAlertDialog);
-        },
-        child: Container(
-            decoration: getBoxDecorationWithShadow(),
-            margin: const EdgeInsets.all(5),
+    var category = favourite.category;
+    return Container(
+        decoration: getBoxDecorationWithShadow(),
+        margin: const EdgeInsets.all(5),
+        child: GestureDetector(
+            onTap: () {
+              showDialog(context: context, builder: _showAlertDialog);
+            },
             child: ListTile(
-              title: Text(expense.title,
+              title: Text(favourite.title,
                   style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       overflow: TextOverflow.ellipsis,
                       color: Colors.black)),
               subtitle: Text(category.qualifiedName, style: categoryStyle),
               leading: ExpenseCategoryBar(category.icon, category.color),
-              trailing: Text(expense.amount.round().toString(),
+              trailing: Text(favourite.amount.round().toString(),
                   style: TextStyle(
                       fontWeight: FontWeight.w800,
                       color: Theme.of(context).primaryColor,

@@ -1,8 +1,8 @@
-import 'package:first_flutter_app/DataRepository.dart';
-import 'package:first_flutter_app/widgets/ExpenseView.dart';
+import 'package:expense_tracker/widgets/ExpenseView.dart';
 import 'package:flutter/material.dart';
 
 import 'Constants.dart';
+import 'DataRepository.dart';
 import 'models/CallBacks.dart';
 import 'models/Expense.dart';
 import 'models/ExpenseCategory.dart';
@@ -19,11 +19,11 @@ class CategorisedExpenseView extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _CategorisedExpenseViewState(repository, category, onDelete, onEdit);
+    return CategorisedExpenseViewState(repository, category, onDelete, onEdit);
   }
 }
 
-class _CategorisedExpenseViewState extends State<CategorisedExpenseView> {
+class CategorisedExpenseViewState extends State<CategorisedExpenseView> {
   List<Expense> expenses = [];
   final DeleteCallback onDelete;
   final EditCallback onEdit;
@@ -31,7 +31,7 @@ class _CategorisedExpenseViewState extends State<CategorisedExpenseView> {
   final ExpenseCategory category;
   final DataRepository repository;
 
-  _CategorisedExpenseViewState(
+  CategorisedExpenseViewState(
       this.repository, this.category, this.onDelete, this.onEdit);
 
   void setExpenseState() async {

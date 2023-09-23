@@ -60,7 +60,7 @@ class ExpenseView extends StatelessWidget {
                 Padding(
                     padding:
                         const EdgeInsets.only(left: 190, bottom: 2, top: 2),
-                    child: Text("Expense: $totalGroupExpense /-",
+                    child: Text("Expense: ${totalGroupExpense.round()} /-",
                         style: separatorStyle)),
               ],
             ));

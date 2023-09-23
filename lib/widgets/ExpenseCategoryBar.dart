@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ExpenseCategoryBar extends StatelessWidget {
-  Icon icon;
-  Color color;
+  final Icon icon;
+  final Color color;
 
-  ExpenseCategoryBar(this.icon, this.color, {super.key});
+  const ExpenseCategoryBar(this.icon, this.color, {super.key});
 
   @override
   Widget build(BuildContext context) {

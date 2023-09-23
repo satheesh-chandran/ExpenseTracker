@@ -1,6 +1,5 @@
-import 'package:first_flutter_app/models/Favourite.dart';
-import 'package:first_flutter_app/widgets/ExpenseCategoryBar.dart';
-import 'package:first_flutter_app/widgets/ExpenseView.dart';
+import 'package:expense_tracker/widgets/ExpenseCategoryBar.dart';
+import 'package:expense_tracker/widgets/ExpenseView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'Constants.dart';
 import 'models/Expense.dart';
 import 'models/ExpenseCategory.dart';
+import 'models/Favourite.dart';
 import 'models/NewExpense.dart';
 
 class ContainerSizeBox extends StatelessWidget {

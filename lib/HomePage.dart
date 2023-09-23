@@ -1,7 +1,6 @@
-import 'package:first_flutter_app/models/Favourite.dart';
-import 'package:first_flutter_app/widgets/ExpenseView.dart';
-import 'package:first_flutter_app/widgets/FavouriteView.dart';
-import 'package:first_flutter_app/widgets/InsightsView.dart';
+import 'package:expense_tracker/widgets/ExpenseView.dart';
+import 'package:expense_tracker/widgets/FavouriteView.dart';
+import 'package:expense_tracker/widgets/InsightsView.dart';
 import 'package:flutter/material.dart';
 
 import 'AddExpensePage.dart';
@@ -9,6 +8,7 @@ import 'Constants.dart';
 import 'DataRepository.dart';
 import 'models/EditExpenseModel.dart';
 import 'models/Expense.dart';
+import 'models/Favourite.dart';
 import 'models/NewExpense.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,16 +17,16 @@ class HomePage extends StatefulWidget {
   const HomePage(this.repository, {super.key});
 
   @override
-  _HomePageState createState() => _HomePageState(repository);
+  HomePageState createState() => HomePageState(repository);
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   final DataRepository repository;
   List<Expense> expenses = [];
   List<Favourite> favourites = [];
   bool isLoaded = false;
 
-  _HomePageState(this.repository);
+  HomePageState(this.repository);
 
   void _showSnackBarMessage(String msg) {
     if (context.mounted) {

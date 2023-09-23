@@ -1,4 +1,4 @@
-package com.step.krm.flutter.first_flutter_app
+package com.step.krm.expense.tracker
 
 import io.flutter.embedding.android.FlutterActivity
 

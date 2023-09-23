@@ -1,4 +1,3 @@
-import 'package:first_flutter_app/models/Favourite.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
@@ -8,6 +7,7 @@ import 'models/EditExpenseModel.dart';
 import 'models/Expense.dart';
 import 'main.dart';
 import 'models/ExpenseCategory.dart';
+import 'models/Favourite.dart';
 import 'models/NewExpense.dart';
 
 class DataRepository {
@@ -15,7 +15,7 @@ class DataRepository {
 
   DataRepository(this.database);
 
-  void loadSchema() async {
+  void _loadSchema() async {
     await database.execute('$EXPENSE_TABLE_SCHEMA\n$FAVOURITE_TABLE_SCHEMA');
     if (kIsWeb) {
       await database.execute(joinedQuery);
@@ -128,6 +128,8 @@ class DataRepository {
     sqfliteFfiInit();
     var databaseFactory = kIsWeb ? databaseFactoryFfiWeb : databaseFactoryFfi;
     var database = databaseFactory.openDatabase(await getDataBasePath());
-    return DataRepository(await database);
+    var repository = DataRepository(await database);
+    repository._loadSchema();
+    return repository;
   }
 }
