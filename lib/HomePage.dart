@@ -130,14 +130,18 @@ class _HomePageState extends State<HomePage> {
     _showSnackBarMessage(msg);
   }
 
+  void _onAddNewExpense(NewExpense expense) async {
+    _setExpenseState(await repository.addNewExpense(expense));
+    var msg = 'Expense: ${expense.title} added of amount ${expense.amount}';
+    _showSnackBarMessage(msg);
+  }
+
   Future<void> _navigateToAddExpensePage(BuildContext context) async {
     NewExpense expense = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => const AddNewExpensePage()));
     if (!mounted) return;
     if (expense != null) {
-      _setExpenseState(await repository.addNewExpense(expense));
-      var msg = 'Expense: ${expense.title} added of amount ${expense.amount}';
-      _showSnackBarMessage(msg);
+      _onAddNewExpense(expense);
     }
   }
 
@@ -176,6 +180,7 @@ class _HomePageState extends State<HomePage> {
                 favourites,
                 _onAddFavourite,
                 _onFavouriteEdit,
+                _onAddNewExpense,
                 (id, shouldRedirect) =>
                     _onFavouriteDelete(context, id, shouldRedirect))
           ],

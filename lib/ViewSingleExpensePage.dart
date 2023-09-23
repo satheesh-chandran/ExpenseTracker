@@ -20,6 +20,7 @@ abstract class ViewSinglePage extends StatelessWidget {
 
   final DeleteCallback onDelete;
   final EditCallback onEdit;
+  final NewExpenseCallback? onAddFromFavourite;
   final bool shouldRedirect;
 
   const ViewSinglePage(this.id, this.title, this.amount, this.category,
@@ -27,6 +28,7 @@ abstract class ViewSinglePage extends StatelessWidget {
       required this.onDelete,
       required this.onEdit,
       required this.shouldRedirect,
+      this.onAddFromFavourite,
       this.paidDate});
 
   void _toEditPage(BuildContext context);
@@ -69,6 +71,7 @@ abstract class ViewSinglePage extends StatelessWidget {
         ElevatedButton.icon(
             onPressed: () {
               Navigator.pop(context);
+              onAddFromFavourite!(NewExpense(title, amount.round(), category));
             },
             icon: const Icon(Icons.add),
             label: const Text("ADD TO EXPENSE"))
@@ -153,8 +156,12 @@ class ViewSingleExpensePage extends ViewSinglePage {
 class ViewSingleFavouritePage extends ViewSinglePage {
   final Favourite expense;
 
-  ViewSingleFavouritePage(this.expense, bool shouldRedirect,
-      DeleteCallback onDelete, EditCallback onEdit,
+  ViewSingleFavouritePage(
+      this.expense,
+      bool shouldRedirect,
+      DeleteCallback onDelete,
+      EditCallback onEdit,
+      NewExpenseCallback onAddFromFavourite,
       {super.key})
       : super(
           expense.id,
@@ -163,6 +170,7 @@ class ViewSingleFavouritePage extends ViewSinglePage {
           expense.category,
           onDelete: onDelete,
           onEdit: onEdit,
+          onAddFromFavourite: onAddFromFavourite,
           shouldRedirect: shouldRedirect,
         );
 

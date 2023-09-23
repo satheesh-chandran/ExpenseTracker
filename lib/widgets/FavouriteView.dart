@@ -12,12 +12,16 @@ class FavouriteItem extends StatelessWidget {
   final Favourite favourite;
   final EditCallback onEdit;
   final DeleteCallback onDelete;
+  final NewExpenseCallback onAddFromFavourite;
 
-  const FavouriteItem(this.favourite, this.onEdit, this.onDelete, {super.key});
+  const FavouriteItem(
+      this.favourite, this.onEdit, this.onDelete, this.onAddFromFavourite,
+      {super.key});
 
   Widget _showAlertDialog(BuildContext context) {
     return AlertDialog(
-        content: ViewSingleFavouritePage(favourite, false, onDelete, onEdit));
+        content: ViewSingleFavouritePage(
+            favourite, false, onDelete, onEdit, onAddFromFavourite));
   }
 
   @override
@@ -56,11 +60,12 @@ class FavouriteItem extends StatelessWidget {
 class FavouritesView extends StatelessWidget {
   final List<Favourite> favourites;
   final NewExpenseCallback onAddFavourite;
+  final NewExpenseCallback onAddFromFavourite;
   final EditCallback onEdit;
   final DeleteCallback onDelete;
 
-  const FavouritesView(
-      this.favourites, this.onAddFavourite, this.onEdit, this.onDelete,
+  const FavouritesView(this.favourites, this.onAddFavourite, this.onEdit,
+      this.onAddFromFavourite, this.onDelete,
       {super.key});
 
   void _addNewFavourite(BuildContext context) async {
@@ -73,8 +78,8 @@ class FavouritesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var favouriteItemList =
-        favourites.map((fav) => FavouriteItem(fav, onEdit, onDelete));
+    var favouriteItemList = favourites
+        .map((fav) => FavouriteItem(fav, onEdit, onDelete, onAddFromFavourite));
     const welcomeNote =
         "Keep your favourites saved here to add expenses in a single click !";
     const btnText = "Add New Favourite";
