@@ -1,4 +1,5 @@
 import 'package:first_flutter_app/models/ExpenseCategory.dart';
+import 'package:first_flutter_app/models/Favourite.dart';
 import 'package:first_flutter_app/widgets/ExpenseCategoryBar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -18,15 +19,28 @@ abstract class ViewSinglePage extends StatelessWidget {
   final String? paidDate;
 
   final DeleteCallback onDelete;
+  final EditCallback onEdit;
   final bool shouldRedirect;
 
   const ViewSinglePage(this.id, this.title, this.amount, this.category,
       {super.key,
       required this.onDelete,
+      required this.onEdit,
       required this.shouldRedirect,
       this.paidDate});
 
   void _toEditPage(BuildContext context);
+
+  void _performEdit(BuildContext context, WidgetBuilder builder) async {
+    Navigator.pop(context);
+    NewExpense newExpense =
+        await Navigator.push(context, MaterialPageRoute(builder: builder));
+    if (newExpense != null) {
+      var editExpenseModel = EditExpenseModel(
+          id, newExpense.title, newExpense.amount, newExpense.category);
+      onEdit(editExpenseModel);
+    }
+  }
 
   List<Widget> _getDateTile(BuildContext context, TextStyle textStyle) {
     if (paidDate == null) {
@@ -55,7 +69,6 @@ abstract class ViewSinglePage extends StatelessWidget {
         ElevatedButton.icon(
             onPressed: () {
               Navigator.pop(context);
-              onDelete(id, shouldRedirect);
             },
             icon: const Icon(Icons.add),
             label: const Text("ADD TO EXPENSE"))
@@ -122,25 +135,39 @@ abstract class ViewSinglePage extends StatelessWidget {
 
 class ViewSingleExpensePage extends ViewSinglePage {
   final Expense expense;
-  final EditCallback onEdit;
 
-  ViewSingleExpensePage(
-      this.expense, bool shouldRedirect, DeleteCallback onDelete, this.onEdit,
-      {super.key})
+  ViewSingleExpensePage(this.expense, bool shouldRedirect,
+      DeleteCallback onDelete, EditCallback onEdit, {super.key})
       : super(expense.id, expense.title, expense.amount, expense.category,
             onDelete: onDelete,
+            onEdit: onEdit,
             shouldRedirect: shouldRedirect,
             paidDate: expense.paidDate);
 
   @override
-  void _toEditPage(BuildContext context) async {
-    Navigator.pop(context);
-    NewExpense newExpense = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => EditExpensePage(expense)));
-    if (newExpense != null) {
-      var editExpenseModel = EditExpenseModel(
-          expense.id, newExpense.title, newExpense.amount, newExpense.category);
-      onEdit(editExpenseModel);
-    }
+  void _toEditPage(BuildContext context) {
+    _performEdit(context, (_) => EditExpensePage(expense));
+  }
+}
+
+class ViewSingleFavouritePage extends ViewSinglePage {
+  final Favourite expense;
+
+  ViewSingleFavouritePage(this.expense, bool shouldRedirect,
+      DeleteCallback onDelete, EditCallback onEdit,
+      {super.key})
+      : super(
+          expense.id,
+          expense.title,
+          expense.amount,
+          expense.category,
+          onDelete: onDelete,
+          onEdit: onEdit,
+          shouldRedirect: shouldRedirect,
+        );
+
+  @override
+  void _toEditPage(BuildContext context) {
+    _performEdit(context, (_) => EditFavouritePage(expense));
   }
 }

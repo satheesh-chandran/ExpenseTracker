@@ -36,15 +36,15 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget _showDeleteAlertDialog(
-      BuildContext context, int id, bool shouldRedirect) {
+  Widget _showDialogs(BuildContext context, bool shouldRedirect,
+      String dialogTitle, VoidCallback callback) {
     return AlertDialog(
-      title: const Text("Do you want to delete selected expense ?",
-          style: TextStyle(fontSize: 16)),
+      title: Text("Do you want to delete the selected $dialogTitle ?",
+          style: const TextStyle(fontSize: 16)),
       actions: [
         TextButton(
             onPressed: () async {
-              _setExpenseState(await repository.deleteExpense(id));
+              callback();
               if (context.mounted) {
                 Navigator.pop(context);
                 if (shouldRedirect) {
@@ -62,17 +62,44 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _showExpenseDeleteAlertDialog(
+      BuildContext context, int id, bool shouldRedirect) {
+    return _showDialogs(context, shouldRedirect, "expense", () async {
+      _setExpenseState(await repository.deleteExpense(id));
+    });
+  }
+
+  Widget _showFavouriteDeleteAlertDialog(
+      BuildContext context, int id, bool shouldRedirect) {
+    return _showDialogs(context, shouldRedirect, "favourite", () async {
+      _setFavouriteState(await repository.deleteFavouriteExpense(id));
+    });
+  }
+
   Future<int> _onDelete(
       BuildContext context, int id, bool shouldRedirect) async {
     showDialog(
         context: context,
         builder: (context) =>
-            _showDeleteAlertDialog(context, id, shouldRedirect));
+            _showExpenseDeleteAlertDialog(context, id, shouldRedirect));
+    return id;
+  }
+
+  Future<int> _onFavouriteDelete(
+      BuildContext context, int id, bool shouldRedirect) async {
+    showDialog(
+        context: context,
+        builder: (context) =>
+            _showFavouriteDeleteAlertDialog(context, id, shouldRedirect));
     return id;
   }
 
   Future<void> _onEdit(EditExpenseModel expense) async {
     _setExpenseState(await repository.editExpense(expense));
+  }
+
+  Future<void> _onFavouriteEdit(EditExpenseModel expense) async {
+    _setFavouriteState(await repository.editFavouriteExpense(expense));
   }
 
   void _setExpenseState(List<Expense> list) {
@@ -82,22 +109,22 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _setFavouriteState(List<Favourite> list) {
+    setState(() {
+      favourites = list;
+    });
+  }
+
   Future<void> _loadAllExpenses() async {
     _setExpenseState(await repository.getAllExpenses());
   }
 
   Future<void> _loadAllFavourites() async {
-    List<Favourite> list = await repository.getAllFavouriteExpenses();
-    setState(() {
-      favourites = list;
-    });
+    _setFavouriteState(await repository.getAllFavouriteExpenses());
   }
 
   void _onAddFavourite(NewExpense expense) async {
-    List<Favourite> list = await repository.addNewFavouriteExpense(expense);
-    setState(() {
-      favourites = list;
-    });
+    _setFavouriteState(await repository.addNewFavouriteExpense(expense));
     var msg =
         'Favourite Expense: ${expense.title} added of amount ${expense.amount}';
     _showSnackBarMessage(msg);
@@ -145,7 +172,12 @@ class _HomePageState extends State<HomePage> {
             isLoaded
                 ? InsightsView(expenses, repository, deleteAction, _onEdit)
                 : const Center(child: CircularProgressIndicator()),
-            FavouritesView(favourites, _onAddFavourite)
+            FavouritesView(
+                favourites,
+                _onAddFavourite,
+                _onFavouriteEdit,
+                (id, shouldRedirect) =>
+                    _onFavouriteDelete(context, id, shouldRedirect))
           ],
         ),
         floatingActionButton: FloatingActionButton(

@@ -1,4 +1,5 @@
 import 'package:first_flutter_app/AddExpensePage.dart';
+import 'package:first_flutter_app/ViewSingleExpensePage.dart';
 import 'package:flutter/material.dart';
 
 import '../models/CallBacks.dart';
@@ -9,8 +10,15 @@ import 'ExpenseView.dart';
 
 class FavouriteItem extends StatelessWidget {
   final Favourite favourite;
+  final EditCallback onEdit;
+  final DeleteCallback onDelete;
 
-  const FavouriteItem(this.favourite, {super.key});
+  const FavouriteItem(this.favourite, this.onEdit, this.onDelete, {super.key});
+
+  Widget _showAlertDialog(BuildContext context) {
+    return AlertDialog(
+        content: ViewSingleFavouritePage(favourite, false, onDelete, onEdit));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +33,9 @@ class FavouriteItem extends StatelessWidget {
         decoration: getBoxDecorationWithShadow(),
         margin: const EdgeInsets.all(5),
         child: GestureDetector(
-            onTap: () {},
+            onTap: () {
+              showDialog(context: context, builder: _showAlertDialog);
+            },
             child: ListTile(
               title: Text(favourite.title,
                   style: const TextStyle(
@@ -46,8 +56,12 @@ class FavouriteItem extends StatelessWidget {
 class FavouritesView extends StatelessWidget {
   final List<Favourite> favourites;
   final NewExpenseCallback onAddFavourite;
+  final EditCallback onEdit;
+  final DeleteCallback onDelete;
 
-  const FavouritesView(this.favourites, this.onAddFavourite, {super.key});
+  const FavouritesView(
+      this.favourites, this.onAddFavourite, this.onEdit, this.onDelete,
+      {super.key});
 
   void _addNewFavourite(BuildContext context) async {
     NewExpense expense = await Navigator.push(context,
@@ -59,7 +73,8 @@ class FavouritesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var favouriteItemList = favourites.map((fav) => FavouriteItem(fav));
+    var favouriteItemList =
+        favourites.map((fav) => FavouriteItem(fav, onEdit, onDelete));
     const welcomeNote =
         "Keep your favourites saved here to add expenses in a single click !";
     const btnText = "Add New Favourite";

@@ -1,3 +1,4 @@
+import 'package:first_flutter_app/models/Favourite.dart';
 import 'package:first_flutter_app/widgets/ExpenseCategoryBar.dart';
 import 'package:first_flutter_app/widgets/ExpenseView.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class AddNewPageState extends State<AddNewPage> {
   final String formTitle;
   final IconData iconData;
 
-  late ExpenseCategory category;
+  late ExpenseCategory category = ExpenseCategory.miscellaneous;
   late TextEditingController remarksController;
   late TextEditingController amountController;
   late String formDateValue;
@@ -78,6 +79,15 @@ class AddNewPageState extends State<AddNewPage> {
       border: const UnderlineInputBorder(),
       labelText: label,
     );
+  }
+
+  List<DropdownMenuItem> _getDropdownMenuItems() {
+    return ExpenseCategory.values
+        .map((ExpenseCategory value) => DropdownMenuItem<ExpenseCategory>(
+              value: value,
+              child: Text(value.qualifiedName),
+            ))
+        .toList();
   }
 
   @override
@@ -135,13 +145,7 @@ class AddNewPageState extends State<AddNewPage> {
                       value: category,
                       underline: Container(),
                       isExpanded: true,
-                      items:
-                          ExpenseCategory.values.map((ExpenseCategory value) {
-                        return DropdownMenuItem<ExpenseCategory>(
-                          value: value,
-                          child: Text(value.qualifiedName),
-                        );
-                      }).toList(),
+                      items: _getDropdownMenuItems(),
                       onChanged: (newCategory) {
                         setState(() {
                           category = newCategory!;
@@ -184,6 +188,19 @@ class EditExpensePage extends AddNewPage {
             amountText: expense.amount.round().toString(),
             formTitle: "Edit Expense",
             dateValue: expense.paidDate);
+}
+
+class EditFavouritePage extends AddNewPage {
+  final Favourite expense;
+
+  EditFavouritePage(this.expense, {super.key})
+      : super(
+          category: expense.category,
+          iconData: Icons.edit,
+          remarks: expense.title,
+          amountText: expense.amount.round().toString(),
+          formTitle: "Edit Favourite",
+        );
 }
 
 class AddNewFavouritePage extends AddNewPage {
