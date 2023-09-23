@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/CallBacks.dart';
 import '../models/Expense.dart';
-import '../ViewSingleExpensePage.dart';
+import '../pages/ViewSingleExpensePage.dart';
 import 'ExpenseCategoryBar.dart';
 import 'ExpenseView.dart';
 

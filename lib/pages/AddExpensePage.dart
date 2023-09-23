@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-import 'Constants.dart';
-import 'models/Expense.dart';
-import 'models/ExpenseCategory.dart';
-import 'models/Favourite.dart';
-import 'models/NewExpense.dart';
+import '../Constants.dart';
+import '../models/Expense.dart';
+import '../models/ExpenseCategory.dart';
+import '../models/Favourite.dart';
+import '../models/NewExpense.dart';
 
 class ContainerSizeBox extends StatelessWidget {
   const ContainerSizeBox({super.key});
@@ -37,10 +37,8 @@ abstract class AddNewPage extends StatefulWidget {
       this.dateValue});
 
   @override
-  State<StatefulWidget> createState() {
-    return AddNewPageState(
-        remarks, amountText, category, formTitle, iconData, dateValue);
-  }
+  State<StatefulWidget> createState() => AddNewPageState(
+      remarks, amountText, category, formTitle, iconData, dateValue);
 }
 
 class AddNewPageState extends State<AddNewPage> {

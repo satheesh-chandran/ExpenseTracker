@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'AddExpensePage.dart';
-import 'Constants.dart';
-import 'models/CallBacks.dart';
-import 'models/EditExpenseModel.dart';
-import 'models/Expense.dart';
-import 'models/ExpenseCategory.dart';
-import 'models/Favourite.dart';
-import 'models/NewExpense.dart';
+import '../Constants.dart';
+import '../models/CallBacks.dart';
+import '../models/EditExpenseModel.dart';
+import '../models/Expense.dart';
+import '../models/ExpenseCategory.dart';
+import '../models/Favourite.dart';
+import '../models/NewExpense.dart';
 
 abstract class ViewSinglePage extends StatelessWidget {
   final int id;

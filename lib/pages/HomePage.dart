@@ -4,12 +4,12 @@ import 'package:expense_tracker/widgets/InsightsView.dart';
 import 'package:flutter/material.dart';
 
 import 'AddExpensePage.dart';
-import 'Constants.dart';
-import 'DataRepository.dart';
-import 'models/EditExpenseModel.dart';
-import 'models/Expense.dart';
-import 'models/Favourite.dart';
-import 'models/NewExpense.dart';
+import '../Constants.dart';
+import '../DataRepository.dart';
+import '../models/EditExpenseModel.dart';
+import '../models/Expense.dart';
+import '../models/Favourite.dart';
+import '../models/NewExpense.dart';
 
 class HomePage extends StatefulWidget {
   final DataRepository repository;

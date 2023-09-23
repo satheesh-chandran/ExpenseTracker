@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../AddExpensePage.dart';
+import '../pages/AddExpensePage.dart';
 import '../models/CallBacks.dart';
 import '../models/Favourite.dart';
 import '../models/NewExpense.dart';

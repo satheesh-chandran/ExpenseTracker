@@ -8,7 +8,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'Constants.dart';
 import 'DataRepository.dart';
-import 'HomePage.dart';
+import 'pages/HomePage.dart';
 
 Future<String> getDataBasePath() async {
   if (kIsWeb) {

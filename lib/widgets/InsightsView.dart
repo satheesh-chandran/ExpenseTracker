@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import '../CategorisedExpenseViewPage.dart';
+import '../pages/CategorisedExpenseViewPage.dart';
 import '../DataRepository.dart';
 import '../models/CallBacks.dart';
 import '../models/Expense.dart';
