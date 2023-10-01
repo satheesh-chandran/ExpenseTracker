@@ -5,6 +5,7 @@ const String DATE_FORMAT = 'dd MMMM yyyy, hh:mm aaa';
 const DATABASE_FILE = "expense_app.db";
 const START_DATE = "START_DATE";
 const END_DATE = "END_DATE";
+const TIME_FILTER = "TIME_FILTER";
 const String EXPENSE_TABLE_SCHEMA =
     'CREATE TABLE IF NOT EXISTS $EXPENSE_TABLE_NAME('
     'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'

@@ -75,12 +75,14 @@ class InsightsViewState extends State<InsightsView> {
 
   void initialiseState() async {
     var expensesList = await repository.getAllExpenses();
-    var start = await repository.startDate();
-    var end = await repository.endDate();
+    var start = await repository.startDate;
+    var end = await repository.endDate;
+    var filterCategory = await repository.filterCategory;
     setState(() {
       expenses = expensesList;
       startDate = start;
       endDate = end;
+      categoryFilter = filterCategory;
     });
   }
 

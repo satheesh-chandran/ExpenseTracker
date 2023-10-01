@@ -1,3 +1,4 @@
+import 'package:expense_tracker/models/FilterCategory.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,14 +27,25 @@ class DataRepository {
     }
   }
 
-  Future<String> startDate() async {
+  Future<FilterCategory> get filterCategory async {
+    if (!prefs.containsKey(TIME_FILTER)) {
+      await setFilterCategory(FilterCategory.all);
+    }
+    return FilterCategory.values.byName(prefs.getString(TIME_FILTER) ?? "all");
+  }
+
+  Future<String> get startDate async {
     if (!prefs.containsKey(START_DATE)) {
       await setStartDate(DateTime.now());
     }
     return toDateString(prefs.getInt(START_DATE) ?? 0);
   }
 
-  Future<String> endDate() async {
+  Future<bool> setFilterCategory(FilterCategory category) {
+    return prefs.setString(TIME_FILTER, category.name);
+  }
+
+  Future<String> get endDate async {
     if (!prefs.containsKey(END_DATE)) {
       await setEndDate(DateTime.now());
     }

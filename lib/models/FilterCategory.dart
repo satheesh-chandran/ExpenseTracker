@@ -1,4 +1,5 @@
 enum FilterCategory {
+  all("All"),
   since("Since"),
   dateRange("Date Range"),
   thisMonth("This Month"),
