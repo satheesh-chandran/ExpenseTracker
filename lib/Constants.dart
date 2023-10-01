@@ -3,6 +3,8 @@ const String EXPENSE_TABLE_NAME = 'expense';
 const String FAVOURITE_TABLE_NAME = 'favourites';
 const String DATE_FORMAT = 'dd MMMM yyyy, hh:mm aaa';
 const DATABASE_FILE = "expense_app.db";
+const START_DATE = "START_DATE";
+const END_DATE = "END_DATE";
 const String EXPENSE_TABLE_SCHEMA =
     'CREATE TABLE IF NOT EXISTS $EXPENSE_TABLE_NAME('
     'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
@@ -10,8 +12,6 @@ const String EXPENSE_TABLE_SCHEMA =
     'amount REAL NOT NULL,'
     'category VARCHAR(100) NOT NULL,'
     'paid_date VARCHAR(40) DEFAULT CURRENT_TIMESTAMP NOT NULL,'
-    'isRefundable INTEGER DEFAULT 0,'
-    'refundedAmount REAL DEFAULT 0,'
     'deletionMarker INTEGER DEFAULT 0);';
 
 const String FAVOURITE_TABLE_SCHEMA =

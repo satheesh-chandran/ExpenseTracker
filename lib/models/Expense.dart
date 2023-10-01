@@ -6,8 +6,6 @@ class Expense {
   final double amount;
   final ExpenseCategory category;
   final String paidDate;
-  final bool isRefundable;
-  final double refundedAmount;
   final bool deletionMarker;
 
   const Expense(
@@ -16,7 +14,5 @@ class Expense {
       required this.amount,
       required this.category,
       required this.paidDate,
-      required this.isRefundable,
-      required this.refundedAmount,
       required this.deletionMarker});
 }

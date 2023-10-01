@@ -1,3 +1,5 @@
+import 'package:expense_tracker/models/FilterCategory.dart';
+import 'package:expense_tracker/widgets/ExpenseCategoryBar.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -14,14 +16,30 @@ class ChartData {
   ChartData(this.category, this.total);
 }
 
-class InsightsView extends StatelessWidget {
-  final List<Expense> expenses;
+class InsightsView extends StatefulWidget {
   final DataRepository repository;
   final DeleteCallback onDelete;
   final EditCallback onEdit;
 
-  const InsightsView(this.expenses, this.repository, this.onDelete, this.onEdit,
-      {super.key});
+  const InsightsView(this.repository, this.onDelete, this.onEdit, {super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return InsightsViewState(repository, onDelete, onEdit);
+  }
+}
+
+class InsightsViewState extends State<InsightsView> {
+  final DataRepository repository;
+  final DeleteCallback onDelete;
+  final EditCallback onEdit;
+
+  late List<Expense> expenses = [];
+  late String startDate = "";
+  late String endDate = "";
+  late FilterCategory categoryFilter = FilterCategory.lastMonth;
+
+  InsightsViewState(this.repository, this.onDelete, this.onEdit);
 
   List<ChartData> _prepareChartData() {
     Map<ExpenseCategory, int> map = <ExpenseCategory, int>{};
@@ -55,6 +73,23 @@ class InsightsView extends StatelessWidget {
     ];
   }
 
+  void initialiseState() async {
+    var expensesList = await repository.getAllExpenses();
+    var start = await repository.startDate();
+    var end = await repository.endDate();
+    setState(() {
+      expenses = expensesList;
+      startDate = start;
+      endDate = end;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initialiseState();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<ChartData> chartData = _prepareChartData();
@@ -83,5 +118,14 @@ class InsightsView extends StatelessWidget {
         ...progressIndicators
       ])),
     );
+  }
+
+  List<DropdownMenuItem<FilterCategory>> _buildCategoryDropdownList() {
+    return FilterCategory.values
+        .map((FilterCategory value) => DropdownMenuItem<FilterCategory>(
+              value: value,
+              child: Text(value.qualifiedName.toUpperCase()),
+            ))
+        .toList();
   }
 }

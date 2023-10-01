@@ -174,7 +174,7 @@ class HomePageState extends State<HomePage> {
                 ? ExpenseView(expenses, false, deleteAction, _onEdit)
                 : const Center(child: CircularProgressIndicator()),
             isLoaded
-                ? InsightsView(expenses, repository, deleteAction, _onEdit)
+                ? InsightsView(repository, deleteAction, _onEdit)
                 : const Center(child: CircularProgressIndicator()),
             FavouritesView(
                 favourites,

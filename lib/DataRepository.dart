@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
@@ -12,8 +14,9 @@ import 'models/NewExpense.dart';
 
 class DataRepository {
   Database database;
+  SharedPreferences prefs;
 
-  DataRepository(this.database);
+  DataRepository(this.database, this.prefs);
 
   void _loadSchema() async {
     await database.execute('$EXPENSE_TABLE_SCHEMA\n$FAVOURITE_TABLE_SCHEMA');
@@ -21,6 +24,37 @@ class DataRepository {
       await database.execute(joinedQuery);
       await database.execute(loadFavouriteQuery);
     }
+  }
+
+  Future<String> startDate() async {
+    if (!prefs.containsKey(START_DATE)) {
+      await setStartDate(DateTime.now());
+    }
+    return toDateString(prefs.getInt(START_DATE) ?? 0);
+  }
+
+  Future<String> endDate() async {
+    if (!prefs.containsKey(END_DATE)) {
+      await setEndDate(DateTime.now());
+    }
+    return toDateString(prefs.getInt(END_DATE) ?? 0);
+  }
+
+  String toDateString(int millis) {
+    return DateFormat('dd/MM/yy')
+        .format(DateTime.fromMillisecondsSinceEpoch(millis));
+  }
+
+  Future<bool> setStartDate(DateTime date) {
+    return setDate(START_DATE, date);
+  }
+
+  Future<bool> setEndDate(DateTime date) {
+    return setDate(END_DATE, date);
+  }
+
+  Future<bool> setDate(String key, DateTime date) {
+    return prefs.setInt(key, date.millisecondsSinceEpoch);
   }
 
   // region Expenses
@@ -57,8 +91,6 @@ class DataRepository {
         amount: mappings[i]['amount'],
         category: ExpenseCategory.values.byName(mappings[i]['category']),
         paidDate: mappings[i]['paid_date'],
-        isRefundable: mappings[i]['isRefundable'] != 0,
-        refundedAmount: mappings[i]['refundedAmount'],
         deletionMarker: mappings[i]['deletionMarker'] != 0,
       );
     });
@@ -125,10 +157,11 @@ class DataRepository {
   }
 
   static Future<DataRepository> initialise() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     sqfliteFfiInit();
     var databaseFactory = kIsWeb ? databaseFactoryFfiWeb : databaseFactoryFfi;
-    var database = databaseFactory.openDatabase(await getDataBasePath());
-    var repository = DataRepository(await database);
+    var database = await databaseFactory.openDatabase(await getDataBasePath());
+    var repository = DataRepository(database, prefs);
     repository._loadSchema();
     return repository;
   }
