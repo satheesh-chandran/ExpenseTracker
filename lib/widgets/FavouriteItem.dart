@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../pages/ViewSingleExpensePage.dart';
 import '../models/CallBacks.dart';
 import '../models/Favourite.dart';
+import '../pages/ViewSingleExpensePage.dart';
 import 'ExpenseCategoryBar.dart';
 import 'ExpenseView.dart';
 

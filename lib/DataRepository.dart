@@ -6,9 +6,9 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 import 'Constants.dart';
+import 'main.dart';
 import 'models/EditExpenseModel.dart';
 import 'models/Expense.dart';
-import 'main.dart';
 import 'models/ExpenseCategory.dart';
 import 'models/Favourite.dart';
 import 'models/NewExpense.dart';
@@ -21,6 +21,11 @@ class DataRepository {
 
   void _loadSchema() async {
     await database.execute('$EXPENSE_TABLE_SCHEMA\n$FAVOURITE_TABLE_SCHEMA');
+    var category = await filterCategory;
+    if (category != FilterCategory.all ||
+        category != FilterCategory.dateRange) {
+      setEndDate(DateTime.now());
+    }
     if (kIsWeb) {
       await database.execute(joinedQuery);
       await database.execute(loadFavouriteQuery);
@@ -34,39 +39,30 @@ class DataRepository {
     return FilterCategory.values.byName(prefs.getString(TIME_FILTER) ?? "all");
   }
 
-  Future<String> get startDate async {
+  Future<DateTime> get startDate async {
     if (!prefs.containsKey(START_DATE)) {
       await setStartDate(DateTime.now());
     }
-    return toDateString(prefs.getInt(START_DATE) ?? 0);
+    return _toDateTime(prefs.getInt(START_DATE) ?? 0);
+  }
+
+  Future<DateTime> get endDate async {
+    if (!prefs.containsKey(END_DATE)) {
+      await setEndDate(DateTime.now());
+    }
+    return _toDateTime(prefs.getInt(END_DATE) ?? 0);
   }
 
   Future<bool> setFilterCategory(FilterCategory category) {
     return prefs.setString(TIME_FILTER, category.name);
   }
 
-  Future<String> get endDate async {
-    if (!prefs.containsKey(END_DATE)) {
-      await setEndDate(DateTime.now());
-    }
-    return toDateString(prefs.getInt(END_DATE) ?? 0);
-  }
-
-  String toDateString(int millis) {
-    return DateFormat('dd/MM/yy')
-        .format(DateTime.fromMillisecondsSinceEpoch(millis));
-  }
-
   Future<bool> setStartDate(DateTime date) {
-    return setDate(START_DATE, date);
+    return _setDate(START_DATE, date);
   }
 
   Future<bool> setEndDate(DateTime date) {
-    return setDate(END_DATE, date);
-  }
-
-  Future<bool> setDate(String key, DateTime date) {
-    return prefs.setInt(key, date.millisecondsSinceEpoch);
+    return _setDate(END_DATE, date);
   }
 
   // region Expenses
@@ -87,12 +83,17 @@ class DataRepository {
   }
 
   Future<List<Expense>> getAllExpenses() async {
-    return _mapToModelExpenseList(await _getAll(EXPENSE_TABLE_NAME));
+    var list = await filterCategory == FilterCategory.all
+        ? await database.query(EXPENSE_TABLE_NAME)
+        : await database.query(EXPENSE_TABLE_NAME,
+            where: _where, whereArgs: await _whereArgs);
+    return _mapToModelExpenseList(list);
   }
 
   Future<List<Expense>> getAllExpensesOf(ExpenseCategory category) async {
     return _mapToModelExpenseList(await database.query(EXPENSE_TABLE_NAME,
-        where: 'category = ?', whereArgs: [category.name]));
+        where: await _whereWithExpenseCategory,
+        whereArgs: [category.name, ...await _whereArgs]));
   }
 
   List<Expense> _mapToModelExpenseList(List<Map<String, dynamic>> mappings) {
@@ -112,7 +113,7 @@ class DataRepository {
 
   // region Favourites
   Future<List<Favourite>> getAllFavouriteExpenses() async {
-    return _mapToModelFavouriteList(await _getAll(FAVOURITE_TABLE_NAME));
+    return _mapToModelFavouriteList(await database.query(FAVOURITE_TABLE_NAME));
   }
 
   Future<List<Favourite>> addNewFavouriteExpense(NewExpense expense) async {
@@ -144,8 +145,38 @@ class DataRepository {
 
   // endregion
 
-  Future<List<Map<String, dynamic>>> _getAll(String tableName) async {
-    return await database.query(tableName);
+  String get _where {
+    return "paid_date BETWEEN ? AND  ?";
+  }
+
+  Future<String> get _whereWithExpenseCategory async {
+    String s = await filterCategory == FilterCategory.all
+        ? ""
+        : _where == ""
+            ? _where
+            : " AND $_where";
+    return "category = ?$s";
+  }
+
+  Future<List<String>> get _whereArgs async {
+    return await filterCategory == FilterCategory.all
+        ? []
+        : [
+            _toDateString(await startDate),
+            "${_toDateString(await endDate)} 23:59:59"
+          ];
+  }
+
+  DateTime _toDateTime(int millis) {
+    return DateTime.fromMillisecondsSinceEpoch(millis);
+  }
+
+  String _toDateString(DateTime date) {
+    return DateFormat('yyyy-MM-dd').format(date);
+  }
+
+  Future<bool> _setDate(String key, DateTime date) {
+    return prefs.setInt(key, date.millisecondsSinceEpoch);
   }
 
   Future<int> _addExpense(NewExpense expense, String tableName) async {

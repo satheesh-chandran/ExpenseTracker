@@ -54,7 +54,7 @@ class AddNewPageState extends State<AddNewPage> {
       this.formTitle, this.iconData, String? dateValue) {
     remarksController = TextEditingController(text: remarks);
     amountController = TextEditingController(text: amountText);
-    formDateValue = createFormDateValue(dateValue);
+    formDateValue = _createFormDateValue(dateValue);
   }
 
   Future<void> _sentDataToHomePage(BuildContext context) async {
@@ -80,7 +80,10 @@ class AddNewPageState extends State<AddNewPage> {
   }
 
   List<DropdownMenuItem> _getDropdownMenuItems() {
-    return ExpenseCategory.values
+    List<ExpenseCategory> categories = ExpenseCategory.values.toList();
+    categories.sort((ExpenseCategory first, ExpenseCategory second) =>
+        first.qualifiedName.compareTo(second.qualifiedName));
+    return categories
         .map((ExpenseCategory value) => DropdownMenuItem<ExpenseCategory>(
               value: value,
               child: Text(value.qualifiedName),
@@ -140,8 +143,12 @@ class AddNewPageState extends State<AddNewPage> {
                   leading: ExpenseCategoryBar(category.icon, category.color),
                   trailing: const Icon(Icons.add),
                   title: DropdownButton(
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).primaryColor),
                       value: category,
-                      underline: Container(),
                       isExpanded: true,
                       items: _getDropdownMenuItems(),
                       onChanged: (newCategory) {
@@ -163,11 +170,9 @@ class AddNewPageState extends State<AddNewPage> {
     );
   }
 
-  static createFormDateValue(String? source) {
-    if (source == null) {
-      return DateFormat(DATE_FORMAT).format(DateTime.now());
-    }
-    return DateFormat(DATE_FORMAT).format(DateTime.parse(source));
+  static _createFormDateValue(String? source) {
+    var date = source == null ? DateTime.now() : DateTime.parse(source);
+    return DateFormat(DATE_FORMAT).format(date);
   }
 }
 

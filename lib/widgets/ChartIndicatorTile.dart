@@ -8,7 +8,7 @@ import 'ExpenseView.dart';
 import 'InsightsView.dart';
 
 class ChartIndicatorTile extends StatelessWidget {
-  final ChartData data;
+  final CircularChartData data;
   final DataRepository repository;
   final DeleteCallback onDelete;
   final EditCallback onEdit;

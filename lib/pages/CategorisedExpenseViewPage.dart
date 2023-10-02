@@ -33,7 +33,7 @@ class CategorisedExpenseViewState extends State<CategorisedExpenseView> {
   CategorisedExpenseViewState(
       this.repository, this.category, this.onDelete, this.onEdit);
 
-  void setExpenseState() async {
+  void _setExpenseState() async {
     var list = await repository.getAllExpensesOf(category);
     if (mounted) {
       setState(() {
@@ -42,22 +42,22 @@ class CategorisedExpenseViewState extends State<CategorisedExpenseView> {
     }
   }
 
-  Future<int> onExpenseDelete(int id, bool shouldRedirect) async {
+  Future<int> _onExpenseDelete(int id, bool shouldRedirect) async {
     await onDelete(id, shouldRedirect);
-    setExpenseState();
+    _setExpenseState();
     return id;
   }
 
   @override
   Widget build(BuildContext context) {
-    setExpenseState();
+    _setExpenseState();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text(APP_TITLE),
       ),
       body: ExpenseView(expenses, expenses.length <= 1,
-          (id, shouldRedirect) => onExpenseDelete(id, shouldRedirect), onEdit),
+          (id, shouldRedirect) => _onExpenseDelete(id, shouldRedirect), onEdit),
     );
   }
 }

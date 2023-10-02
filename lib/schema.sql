@@ -19,13 +19,15 @@ INSERT INTO expense (title, amount, category, paid_date) VALUES ('Jio recharge',
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Pizza', 500, 'Bills', '2023-09-06 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Gold Investment', 3000, 'Bills', '2023-09-07 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Car Petrol', 1000, 'Bills', '2023-09-10 09:20:23');
-INSERT INTO expense (title, amount, category, paid_date) VALUES ('Bike Service', 2360, 'Bills', '2023-09-10 09:20:23');
+INSERT INTO expense (title, amount, category, paid_date) VALUES ('Bike Service', 2360, 'transportation', '2023-09-10 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Hospital diabetic checkup', 450, 'Bills', '2023-09-11 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Snacks', 150, 'Bills', '2023-09-11 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Fruits and vegetables', 270, 'Bills', '2023-09-13 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Home loan EMI', 7500, 'Bills', '2023-09-14 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Bike EMI', 2700, 'Bills', '2023-09-17 09:20:23');
 INSERT INTO expense (title, amount, category, paid_date) VALUES ('Onam dress purchage', 3100, 'Bills', '2023-08-17 09:20:23');
+
+select * from expense where category = 'transportation' and  paid_date between '2023-09-04' and  '2023-09-14 23:59:59';
 
 CREATE TABLE IF NOT EXISTS favourites(
        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,

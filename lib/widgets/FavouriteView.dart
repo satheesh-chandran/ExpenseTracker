@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../pages/AddExpensePage.dart';
 import '../models/CallBacks.dart';
 import '../models/Favourite.dart';
 import '../models/NewExpense.dart';
+import '../pages/AddExpensePage.dart';
 import 'FavouriteItem.dart';
 
 class FavouritesView extends StatelessWidget {

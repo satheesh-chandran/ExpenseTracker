@@ -3,13 +3,13 @@ import 'package:expense_tracker/widgets/FavouriteView.dart';
 import 'package:expense_tracker/widgets/InsightsView.dart';
 import 'package:flutter/material.dart';
 
-import 'AddExpensePage.dart';
 import '../Constants.dart';
 import '../DataRepository.dart';
 import '../models/EditExpenseModel.dart';
 import '../models/Expense.dart';
 import '../models/Favourite.dart';
 import '../models/NewExpense.dart';
+import 'AddExpensePage.dart';
 
 class HomePage extends StatefulWidget {
   final DataRepository repository;
@@ -159,12 +159,12 @@ class HomePageState extends State<HomePage> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text(APP_TITLE),
           bottom: const TabBar(
-            labelPadding: EdgeInsets.all(10),
-            indicatorSize: TabBarIndicatorSize.label,
+            indicatorWeight: 3,
+            indicatorSize: TabBarIndicatorSize.tab,
             tabs: [
-              Text("Expenses", style: tabHeaderTextStyle),
-              Text("Insights", style: tabHeaderTextStyle),
-              Text("Favourites", style: tabHeaderTextStyle),
+              Tab(icon: Icon(Icons.library_books_rounded), text: "Expenses"),
+              Tab(icon: Icon(Icons.pie_chart), text: "Insights"),
+              Tab(icon: Icon(Icons.star), text: "Favourites")
             ],
           ),
         ),

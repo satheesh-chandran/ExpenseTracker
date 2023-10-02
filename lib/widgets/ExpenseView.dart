@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:intl/intl.dart';
 
 import '../models/CallBacks.dart';
 import '../models/Expense.dart';
@@ -25,25 +26,31 @@ class ExpenseView extends StatelessWidget {
   final bool shouldRedirect;
   final DeleteCallback onDelete;
   final EditCallback onEdit;
+  final DateFormat dateFormatter = DateFormat('yyyy/MM/dd E, hh:mm aaa');
 
-  const ExpenseView(
-      this.expenses, this.shouldRedirect, this.onDelete, this.onEdit,
+  ExpenseView(this.expenses, this.shouldRedirect, this.onDelete, this.onEdit,
       {super.key});
+
+  String _getDateOnly(String fullDateFormat) {
+    return dateFormatter.format(DateTime.parse(fullDateFormat)).split(",")[0];
+  }
 
   @override
   Widget build(BuildContext context) {
     return GroupedListView<Expense, String>(
       elements: expenses,
       shrinkWrap: true,
-      groupBy: (element) => element.paidDate.split(" ")[0],
+      groupBy: (element) {
+        return _getDateOnly(element.paidDate);
+      },
       groupSeparatorBuilder: (String groupByValue) {
         var totalGroupExpense = expenses
-            .where((element) => element.paidDate.split(" ")[0] == groupByValue)
+            .where((element) => _getDateOnly(element.paidDate) == groupByValue)
             .map((e) => e.amount)
             .reduce((value, element) => value + element);
 
         var separatorStyle = TextStyle(
-            color: Colors.green.shade800,
+            color: Theme.of(context).primaryColor,
             overflow: TextOverflow.ellipsis,
             fontStyle: FontStyle.italic,
             fontSize: 12,
@@ -59,7 +66,7 @@ class ExpenseView extends StatelessWidget {
                         textAlign: TextAlign.left, style: separatorStyle)),
                 Padding(
                     padding:
-                        const EdgeInsets.only(left: 190, bottom: 2, top: 2),
+                        const EdgeInsets.only(left: 170, bottom: 2, top: 2),
                     child: Text("Expense: ${totalGroupExpense.round()} /-",
                         style: separatorStyle)),
               ],
