@@ -2,7 +2,7 @@
     <application
         android:label="Expense Tracker"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/icons8_money_bag_64">
         <activity
             android:name=".MainActivity"
             android:exported="true"
